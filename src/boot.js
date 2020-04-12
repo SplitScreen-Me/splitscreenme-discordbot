@@ -1,11 +1,23 @@
 import Discord from "discord.js";
 import Axios from "axios";
+import fs from "fs";
 
 const publicSSMApiPath = "https://hub.splitscreen.me/api/v1/";
-
+const botPrefix = "-";
 const DiscordInit = secretDiscordToken => {
 
   const DiscordBot = new Discord.Client();
+
+  DiscordBot.commands = new Discord.Collection();
+
+  const commandFiles = fs.readdirSync('./src/commands').filter(file => file.endsWith('.js'));
+  let availableCMDs = [];
+  for (const file of commandFiles) {
+    availableCMDs.push(file.replace('.js',''));
+    const command = require(`./commands/${file}`);
+    DiscordBot.commands.set(command.name, command);
+  }
+
   DiscordBot.on('ready', async () => {
     console.log('[Debug] Connected as ' + DiscordBot.user.tag);
     console.log('[Debug] Servers:');
@@ -26,7 +38,7 @@ const DiscordInit = secretDiscordToken => {
         const totalHandlers = allHandlers.data.Handlers.length;
         await DiscordBot.user.setActivity('Hosting ' + totalHandlers + ' handlers!');
       }, 60000);
-    }catch(e){
+    } catch (e) {
       console.log("error", e)
     }
   });
@@ -45,112 +57,25 @@ const DiscordInit = secretDiscordToken => {
 
   DiscordBot.login(secretDiscordToken);
 
-  const DiscordBotCmd = {
-    sendEverywhere: message => {
-      let guildList = DiscordBot.guilds.array();
-      guildList.forEach(guild => {
-        try {
-          let channelID;
-          let channels = guild.channels;
-          channelLoop: for (let c of channels) {
-            let channelType = c[1].type;
-            if (channelType === 'text') {
-              channelID = c[0];
-              break channelLoop;
-            }
-          }
-
-          let channel = DiscordBot.channels.get(guild.systemChannelID || channelID);
-          channel.send(message);
-        } catch (err) {
-          console.log('Could not send message to ' + guild.name);
-        }
-      });
-    },
-    setActivity: description => {
-      DiscordBot.user.setActivity(description);
-    },
-  };
-
   DiscordBot.on('message', async receivedMessage => {
-    if (receivedMessage.author == DiscordBot.user) {
-      // Prevent bot from responding to its own messages
-      return;
-    }
-
-    if (receivedMessage.content.startsWith('-')) {
-      await processCommand(receivedMessage);
+    if (receivedMessage.author.bot) return; //Will ignore bots and it-self
+    if (!receivedMessage.content.startsWith(botPrefix)) return; //Ignore messages from users which not start with {botPrefix}
+    const fullCommand = receivedMessage.content.substr(1); // Remove the leading {botPrefix}
+    const splitCommand = fullCommand.split(' '); // Split the message up in to pieces for each space
+    const commandName = splitCommand[0].toLowerCase(); // The first word directly after the {botPrefix} is the command
+    if (availableCMDs.includes(commandName)){
+      const command = DiscordBot.commands.get(commandName);
+      try {
+        
+        command.execute(receivedMessage,DiscordBot);
+      } catch (error) {
+        console.error(error);
+      }
+    } else {
+      return; //Ignore CMDs which are not imported
     }
   });
 
-  async function processCommand(receivedMessage) {
-    let fullCommand = receivedMessage.content.substr(1); // Remove the leading exclamation mark
-    let splitCommand = fullCommand.split(' '); // Split the message up in to pieces for each space
-    let primaryCommand = splitCommand[0]; // The first word directly after the exclamation is the command
-    let argume = splitCommand.slice(1); // All other words are arguments/parameters/options for the command
-
-    if (primaryCommand === 'handler') {
-      await handlerCommand(argume, receivedMessage);
-    } else {
-      receivedMessage.channel.send("I don't understand the command. Try `-handler [game name]`");
-    }
-  }
-
-  async function handlerCommand(argume, receivedMessage) {
-    if (argume.length === 0) {
-      receivedMessage.channel.send('Please, provide a game name.');
-      return;
-    }
-    let totalGame = '';
-    argume.forEach(value => {
-      totalGame = totalGame + ' ' + value;
-    });
-    totalGame = totalGame.substr(1);
-    const allHandlers = await Axios.get(publicSSMApiPath + 'handlers/' + totalGame.replace(/[^a-z0-9 -]/g, ""));
-    const foundHandlers = allHandlers.data.Handlers.length > 3 ? allHandlers.data.Handlers.slice(0, 3)  : allHandlers.data.Handlers;
-    if (!foundHandlers || foundHandlers.length === 0) {
-      receivedMessage.channel.send('Sorry, no handler found matching your query!');
-    } else {
-      foundHandlers.forEach(handler => {
-        receivedMessage.channel.send({
-          embed: {
-            color: 3447003,
-            author: {
-              name: DiscordBot.user.username,
-              icon_url: DiscordBot.user.avatarURL,
-            },
-            title: handler.gameName,
-            url: `https://hub.splitscreen.me/handler/${handler._id}`,
-            thumbnail: {
-              url: `https://images.igdb.com/igdb/image/upload/t_cover_big/${handler.gameCover}.jpg`,
-            },
-            fields: [
-              {
-                name: 'Author',
-                inline: true,
-                value: handler.ownerName,
-              },
-              {
-                name: 'Hotness',
-                inline: true,
-                value: handler.stars,
-              },
-              {
-                name: 'Total downloads',
-                inline: true,
-                value: handler.downloadCount,
-              },
-            ],
-            timestamp: new Date(),
-            footer: {
-              icon_url: DiscordBot.user.avatarURL,
-              text: '© SplitScreen.Me',
-            },
-          },
-        });
-      });
-    }
-  }
 };
 
 export default DiscordInit;
