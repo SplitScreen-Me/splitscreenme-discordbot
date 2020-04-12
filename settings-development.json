@@ -1,0 +1,13 @@
+{
+  "public": {
+    "productName": "SplitScreen.Me",
+    "copyrightStartYear": "2020",
+    "twitterUsername": "splitscreen-me",
+    "facebookUsername": "splitscreen-me",
+    "githubProjectUrl": "https://github.com/splitscreen-me",
+    "productAddress": "https://www.splitscreen.me/"
+  },
+  "private": {
+    "DISCORD_BOT_SECRET_TOKEN": ""
+  }
+}
