@@ -1,7 +1,7 @@
 {
   "public": {
     "productName": "SplitScreen.Me",
-    "copyrightStartYear": "2020",
+    "copyrightStartYear": "2019",
     "twitterUsername": "splitscreen-me",
     "facebookUsername": "splitscreen-me",
     "githubProjectUrl": "https://github.com/splitscreen-me",
@@ -9,6 +9,6 @@
   },
   "private": {
     "DISCORD_BOT_SECRET_TOKEN": "",
-    "DEVELOPMENT_CHANNELS":[]
+    "DEVELOPMENT_CHANNELS": []
   }
 }

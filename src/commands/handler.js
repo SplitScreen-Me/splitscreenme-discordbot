@@ -53,6 +53,11 @@ module.exports = {
 							inline: true,
 							value: handler.downloadCount,
 						},
+						{
+							name: 'Status',
+							inline: true,
+							value: handler.verified ? 'Verified' : 'Unverified',
+						},
 					],
 					timestamp: new Date(),
 					footer: {
