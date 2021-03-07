@@ -24,8 +24,11 @@ module.exports = {
 			receivedMessage.channel.send('Sorry, no handler found matching your query!');
 			return;
 		}
-		const foundHandlers = allHandlers.data.Handlers.length > 3 ? allHandlers.data.Handlers.slice(0, 3) : allHandlers.data.Handlers;
+		const foundHandlers = allHandlers.data.Handlers.length > 3 ? 
+    allHandlers.data.Handlers.slice(0, 3) : allHandlers.data.Handlers;
+    var downloadLink = " ";
 		foundHandlers.forEach(handler => {
+      downloadLink = `https://hub.splitscreen.me/cdn/storage/packages/${handler.currentPackage}/original/handler-${handler._id}-v${handler.currentVersion}.nc?download=true`
 			receivedMessage.channel.send({
 				embed: {
 					color: 3447003,
@@ -58,6 +61,11 @@ module.exports = {
 							inline: true,
 							value: handler.verified ? 'Verified' : 'Unverified',
 						},
+            {
+              name: `Download`,
+              inline: false,
+					    value: `[Download Handler (v${handler.currentVersion})](${downloadLink})`,
+				  	},
 					],
 					timestamp: new Date(),
 					footer: {
