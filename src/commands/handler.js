@@ -8,7 +8,7 @@ module.exports = {
 		let fullCommand = receivedMessage.content.substr(1); // Remove the leading exclamation mark
 		let splitCommand = fullCommand.split(' '); // Split the message up in to pieces for each space
 		let argume = splitCommand.slice(1);
-		// console.log(argume);
+		// console.log(argume);olafsbestfriend123
 		if (argume.length === 0) {
 			receivedMessage.channel.send('Please, provide a game name.');
 			return;
@@ -24,8 +24,7 @@ module.exports = {
 			receivedMessage.channel.send('Sorry, no handler found matching your query!');
 			return;
 		}
-		const foundHandlers = allHandlers.data.Handlers.length > 3 ? 
-    allHandlers.data.Handlers.slice(0, 3) : allHandlers.data.Handlers;
+		const foundHandlers = allHandlers.data.Handlers.length > 3 ? allHandlers.data.Handlers.slice(0, 3) : allHandlers.data.Handlers;
     var downloadLink = " ";
 		foundHandlers.forEach(handler => {
       downloadLink = `https://hub.splitscreen.me/cdn/storage/packages/${handler.currentPackage}/original/handler-${handler._id}-v${handler.currentVersion}.nc?download=true`
@@ -44,7 +43,7 @@ module.exports = {
 					fields: [{
 							name: 'Author',
 							inline: true,
-							value: handler.ownerName
+							value: `[${handler.ownerName}](https://hub.splitscreen.me/user/${handler.owner})`
 						},
 						{
 							name: 'Hotness',
