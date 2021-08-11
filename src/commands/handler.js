@@ -8,7 +8,7 @@ module.exports = {
 		let fullCommand = receivedMessage.content.substr(1); // Remove the leading exclamation mark
 		let splitCommand = fullCommand.split(' '); // Split the message up in to pieces for each space
 		let argume = splitCommand.slice(1);
-		// console.log(argume);olafsbestfriend123
+		// console.log(argume);
 		if (argume.length === 0) {
 			receivedMessage.channel.send('Please, provide a game name.');
 			return;
@@ -25,9 +25,9 @@ module.exports = {
 			return;
 		}
 		const foundHandlers = allHandlers.data.Handlers.length > 3 ? allHandlers.data.Handlers.slice(0, 3) : allHandlers.data.Handlers;
-    		var downloadLink = " ";
+		var downloadLink = " ";
 		foundHandlers.forEach(handler => {
-     			downloadLink = `https://hub.splitscreen.me/cdn/storage/packages/${handler.currentPackage}/original/handler-${handler._id}-v${handler.currentVersion}.nc?download=true`
+			downloadLink = `https://hub.splitscreen.me/cdn/storage/packages/${handler.currentPackage}/original/handler-${handler._id}-v${handler.currentVersion}.nc?download=true`
 			receivedMessage.channel.send({
 				embed: {
 					color: 3447003,
@@ -41,10 +41,10 @@ module.exports = {
 						url: `https://images.igdb.com/igdb/image/upload/t_cover_big/${handler.gameCover}.jpg`,
 					},
 					fields: [{
-							name: 'Author',
-							inline: true,
-							value: `[${handler.ownerName}](https://hub.splitscreen.me/user/${handler.owner})`
-						},
+						name: 'Author',
+						inline: true,
+						value: `[${handler.ownerName}](https://hub.splitscreen.me/user/${handler.owner})`
+					},
 						{
 							name: 'Hotness',
 							inline: true,
@@ -60,11 +60,11 @@ module.exports = {
 							inline: true,
 							value: handler.verified ? 'Verified' : 'Unverified',
 						},
-            					{
-              						name: `Download`,
-             						inline: false,
-					   		value: `[Download Handler (v${handler.currentVersion})](${downloadLink})`,
-				  		},
+						{
+							name: `Download`,
+							inline: false,
+							value: `[Download Handler (v${handler.currentVersion})](${downloadLink})`,
+						},
 					],
 					timestamp: new Date(),
 					footer: {
