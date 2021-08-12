@@ -3,6 +3,7 @@ import Settings from "../../src/settings"
 
 module.exports = {
 	name: 'create',
+	aliases: ['c'],
 	description: 'Creates the handler from the provided information. Example: "-create GameName"',
 	async execute(receivedMessage, DiscordBot) {
 		console.log('settings: ',Settings.private.DEVELOPMENT_CHANNELS)

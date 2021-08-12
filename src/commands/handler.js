@@ -4,6 +4,7 @@ const publicSSMApiPath = "https://hub.splitscreen.me/api/v1/";
 
 module.exports = {
     name: 'handler',
+    aliases: ['h', 'script'],
     description: 'Return handler for the specified game. Example: "-handler Game name"',
     async execute(receivedMessage, DiscordBot) {
         let fullCommand = receivedMessage.content.substr(1); // Remove the leading exclamation mark
