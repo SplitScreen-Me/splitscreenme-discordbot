@@ -8,7 +8,7 @@ exports.config = {
     name: `help`,
     aliases: [`commands`, `commandlist`],
     description: `Shows a list of all available bot commands`,
-    usage: `${prefix}help [command_name]`,
+    usage: `${prefix}help {command_name}`,
     example: `${prefix}help handler`
 }
 exports.execute = async (DiscordBot, receivedMessage, args) => {
@@ -16,9 +16,8 @@ exports.execute = async (DiscordBot, receivedMessage, args) => {
     const {commands} = receivedMessage.client;
     console.log("args" + args)
     if (!args.length) {
-        console.log("we got this far");
         data.push("Here is a list of all my commands");
-        data.push( prefix + commands.map(c => ` ${c.config.name} \`${c.config.aliases.join(` , `)}\``).join(`\n-`));
+        data.push( prefix + commands.map(c => ` ${c.config.name} ${c.config.aliases.length ? `, ` + c.config.aliases.join(` , `) : ""}`).join(`\n-`));
         data.push(`\n use ${prefix}help [command name] to get info about a specific command`);
         receivedMessage.channel.send(data);
         return;

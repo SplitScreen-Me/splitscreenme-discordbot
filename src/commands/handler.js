@@ -2,6 +2,7 @@ import Axios from "axios";
 const { prefix } = require('../../src/utils.js');
 
 const publicSSMApiPath = "https://hub.splitscreen.me/api/v1/";
+
 exports.config = {
     name: `handler`,
     aliases: [`h`, `script`],
@@ -11,17 +12,14 @@ exports.config = {
 }
 
 exports.execute = async (DiscordBot, receivedMessage, args) => {
-    let fullCommand = receivedMessage.content.substr(1); // Remove the leading exclamation mark
-    let splitCommand = fullCommand.split(' '); // Split the message up in to pieces for each space
-    let argume = splitCommand.slice(1);
-    // console.log(argume);
-    if (argume.length === 0) {
+    // console.log([...args]);
+    if (args.length === 0) {
         receivedMessage.channel.send('Please, provide a game name.');
         return;
     }
 
     let totalGame = '';
-    argume.forEach(value => {
+    args.forEach(value => {
         totalGame = totalGame + ' ' + value;
     });
     totalGame = totalGame.substr(1);
