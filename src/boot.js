@@ -1,14 +1,13 @@
 import Discord from "discord.js";
 import Axios from "axios";
 import fs from "fs";
+const { prefix } = require('../src/utils.js');
 
 const publicSSMApiPath = "https://hub.splitscreen.me/api/v1/";
-const botPrefix = "-";
+const botPrefix = prefix;
 const DiscordInit = secretDiscordToken => {
 
-    const DiscordBot = new Discord.Client({
-        commandPrefix: botPrefix
-    });
+    const DiscordBot = new Discord.Client();
 
     DiscordBot.commands = new Discord.Collection();
 
@@ -16,11 +15,13 @@ const DiscordInit = secretDiscordToken => {
     for (const file of commandFiles) {
         const command = require(`./commands/${file}`);
         const commandName = file.split('.')[0];
+        console.log(commandName);
 
         DiscordBot.commands.set(commandName, command);
     }
 
     DiscordBot.on('ready', async () => {
+        console.log("prefix = " + botPrefix);
         console.log('[Debug] Connected as ' + DiscordBot.user.tag);
         console.log('[Debug] Servers:');
         DiscordBot.guilds.cache.forEach((guild) => {
@@ -64,18 +65,18 @@ const DiscordInit = secretDiscordToken => {
         if (!receivedMessage.content.startsWith(botPrefix)) return; //Ignore messages from users which not start with {botPrefix}
         const fullCommand = receivedMessage.content.substr(1); // Remove the leading {botPrefix}
         const splitCommand = fullCommand.split(' '); // Split the message up in to pieces for each space
+        const args = splitCommand.slice(1); //arguments
         const commandName = splitCommand[0].toLowerCase(); // The first word directly after the {botPrefix} is the command or alias
         const command = //get the command based on a command or alias
-            DiscordBot.commands.get(commandName) || DiscordBot.commands.find(cmd => cmd.aliases && cmd.aliases.includes(commandName.toString()));
+            DiscordBot.commands.get(commandName) || DiscordBot.commands.find(cmd => cmd.config.aliases && cmd.config.aliases.includes(commandName));
 
         console.log(`commandName => ${commandName}`);
-        console.log(`command => ${command}`);
 
         if (command) {
             console.log("command recognized");
             try {
 
-                command.execute(receivedMessage, DiscordBot);
+                command.execute(DiscordBot, receivedMessage, args);
             } catch (error) {
                 console.error(error);
             }
