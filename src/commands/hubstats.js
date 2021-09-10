@@ -1,6 +1,8 @@
 import Axios from "axios";
 import Settings from "../../src/settings"
 const { prefix } = require('../../src/utils.js');
+const { MessageEmbed } = require('discord.js');
+import devSettings from '../../settings-development'
 
 const publicSSMApiPath = "https://hub.splitscreen.me/api/v1/";
 
@@ -18,10 +20,14 @@ exports.execute = async (DiscordBot, receivedMessage, args) => {
     console.log(`args`, args)
 
     const totalDownloadCountEver = await Axios.get(publicSSMApiPath + 'totalDownloadCountEver');
-    console.log('settings: ', Settings.private.DEVELOPMENT_CHANNELS)
-    console.log('received: ', receivedMessage.guild.id);
-    if (Settings.private.DEVELOPMENT_CHANNELS.includes(receivedMessage.guild.id)) {
-        console.log("hubstats access granted")
-        receivedMessage.channel.send(`${totalDownloadCountEver.data}`);
-    }
+    const embed = new MessageEmbed()
+    embed.setColor('#3498db')
+        .setTitle('Hub Stats')
+        .setAuthor(devSettings.public.productName, DiscordBot.user.avatarURL, devSettings.public.productAddress)
+        .setTimestamp()
+        .setFooter('© SplitScreen.Me', DiscordBot.user.avatarURL)
+        .addFields({name:"Stats", value: totalDownloadCountEver.data});
+
+
+    receivedMessage.channel.send(embed);
 };

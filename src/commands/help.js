@@ -18,7 +18,7 @@ exports.execute = async (DiscordBot, receivedMessage, args) => {
     console.log('received: ', receivedMessage.guild.id);
     console.log(`args`, args)
 
-    let embed = new MessageEmbed()
+    const embed = new MessageEmbed()
     const {commands} = receivedMessage.client;
     console.log("args" , args)
     if (!args.length) {
@@ -57,30 +57,4 @@ exports.execute = async (DiscordBot, receivedMessage, args) => {
     if (cmd.config.aliases) embed.addFields({ name: 'Example' , value: `\`\`\`${cmd.config.example}\`\`\`` } )
 
     receivedMessage.channel.send(embed);
-
-    /*receivedMessage.channel.send({
-
-        embed: {
-            color: 3447003,
-            author: {
-                name: DiscordBot.user.username,
-                icon_url: DiscordBot.user.avatarURL,
-            },
-            title: "Commandlist",
-            thumbnail: {
-                url: `https://images.igdb.com/igdb/image/upload/t_cover_big/.jpg`,
-            },
-            fields: [{
-                name: DiscordBot.commands.name,
-                inline: true,
-                value: `[](https://hub.splitscreen.me/user/)`
-            },
-            ],
-            timestamp: new Date(),
-            footer: {
-                icon_url: DiscordBot.user.avatarURL,
-                text: '© SplitScreen.Me',
-            },
-        },
-    });*/
 };
