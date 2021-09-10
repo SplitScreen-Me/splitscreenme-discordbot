@@ -14,6 +14,10 @@ exports.config = {
     example: `${prefix}help handler`
 }
 exports.execute = async (DiscordBot, receivedMessage, args) => {
+    console.log('settings: ', Settings.private.DEVELOPMENT_CHANNELS)
+    console.log('received: ', receivedMessage.guild.id);
+    console.log(`args`, args)
+
     let embed = new MessageEmbed()
     const {commands} = receivedMessage.client;
     console.log("args" , args)
@@ -48,9 +52,9 @@ exports.execute = async (DiscordBot, receivedMessage, args) => {
         .setFooter('© SplitScreen.Me', DiscordBot.user.avatarURL);
     if (cmd.config.name) embed.setDescription(`Help for the \`${prefix + cmd.config.name}\` command`);
     if (cmd.config.description) embed.addFields({ name: 'Description', value: cmd.config.description } )
-    if (cmd.config.aliases) embed.addFields({name: 'Aliases' , value: cmd.config.aliases.join(` , `)})
-    if (cmd.config.aliases) embed.addFields({name: 'Usage  [mandatory] \<optional\>' , value: cmd.config.usage})
-    if (cmd.config.aliases) embed.addFields({name: 'Example' , value: cmd.config.example})
+    if (cmd.config.aliases) embed.addFields({ name: 'Aliases' , value: `\`\`\`${cmd.config.aliases.join(` , `)}\`\`\`` } )
+    if (cmd.config.aliases) embed.addFields({ name: 'Usage  [mandatory] \<optional\>' , value: `\`\`\`${cmd.config.usage}\`\`\`` } )
+    if (cmd.config.aliases) embed.addFields({ name: 'Example' , value: `\`\`\`${cmd.config.example}\`\`\`` } )
 
     receivedMessage.channel.send(embed);
 

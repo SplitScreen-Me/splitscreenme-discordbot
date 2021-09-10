@@ -6,7 +6,7 @@ const { prefix } = require('../../src/utils.js');
 exports.config = {
     name: `create`,
     aliases: [`c`, `make`],
-    description: `Creates the handler from the provided information.`,
+    description: `Creates the handler for a chosen GameEngine. \nFor a list of supported Engines, use \`${prefix}create options\``,
     usage: `${prefix}create [engineName]`,
     example: `${prefix}create CryEngine`
 }
@@ -15,6 +15,7 @@ exports.execute = async (DiscordBot, receivedMessage, args) => {
     console.log('settings: ', Settings.private.DEVELOPMENT_CHANNELS)
     console.log('received: ', receivedMessage.guild.id);
     console.log(`args`, args)
+
     if (Settings.private.DEVELOPMENT_CHANNELS.includes(receivedMessage.guild.id)) {
 
         // help command
@@ -33,7 +34,6 @@ exports.execute = async (DiscordBot, receivedMessage, args) => {
         }
 
         //normal command
-        console.log("create access granted")
         receivedMessage.channel.send(`${prefix}create access granted`);
         receivedMessage.channel.send("Testing message.", { files: [`./src/handler_templates/${args}.js`] });
     }

@@ -1,4 +1,5 @@
 import Axios from "axios";
+import Settings from "../settings";
 const { prefix } = require('../../src/utils.js');
 
 const publicSSMApiPath = "https://hub.splitscreen.me/api/v1/";
@@ -12,8 +13,11 @@ exports.config = {
 }
 
 exports.execute = async (DiscordBot, receivedMessage, args) => {
-    // console.log([...args]);
-    if (args.length === 0) {
+    console.log('settings: ', Settings.private.DEVELOPMENT_CHANNELS)
+    console.log('received: ', receivedMessage.guild.id);
+    console.log(`args`, args)
+
+    if (!args.length) {
         receivedMessage.channel.send('Please provide a game name.');
         return;
     }
