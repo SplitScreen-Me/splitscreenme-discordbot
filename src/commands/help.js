@@ -1,6 +1,8 @@
 import Axios from "axios";
 import Settings from "../settings";
 const { prefix } = require('../../src/utils.js');
+const { MessageEmbed } = require('discord.js');
+import devSettings from '../../settings-development'
 
 const publicSSMApiPath = "https://hub.splitscreen.me/api/v1/";
 
@@ -12,14 +14,21 @@ exports.config = {
     example: `${prefix}help handler`
 }
 exports.execute = async (DiscordBot, receivedMessage, args) => {
-    const data = [];
+    let embed = new MessageEmbed()
     const {commands} = receivedMessage.client;
-    console.log("args" + args)
+    console.log("args" , args)
     if (!args.length) {
-        data.push("Here is a list of all my commands");
-        data.push( prefix + commands.map(c => ` ${c.config.name} ${c.config.aliases.length ? `, ` + c.config.aliases.join(` , `) : ""}`).join(`\n-`));
-        data.push(`\n use ${prefix}help [command name] to get info about a specific command`);
-        receivedMessage.channel.send(data);
+        embed.setColor('#3498db')
+            .setTitle('Help Command')
+            .setAuthor(devSettings.public.productName, DiscordBot.user.avatarURL, devSettings.public.productAddress)
+            .setDescription('Here is a list of all my commands \n\n use \`-help <command name>\` to get info about a specific command')
+            .addFields(
+                { name: 'Commands (aliases)', value: `\`\`\`${prefix + commands.map(c => ` ${c.config.name} ${c.config.aliases.length ? '(' + c.config.aliases.join(`, `) + `)` : ""}`).join(`\n-`)}\`\`\`` },
+            )
+            .setTimestamp()
+            .setFooter('© SplitScreen.Me', DiscordBot.user.avatarURL);
+
+        receivedMessage.channel.send(embed);
         return;
     }
 
@@ -32,13 +41,18 @@ exports.execute = async (DiscordBot, receivedMessage, args) => {
     }
 
 
-    if (cmd.config.name) data.push(`**Name**: ${cmd.config.name}`);
-    if (cmd.config.description) data.push(`**Description:** ${cmd.config.description}`);
-    if (cmd.config.aliases) data.push(`**Aliases:** ${cmd.config.aliases.join(` , `)}`);
-    if (cmd.config.usage) data.push(`**Usage:** ${cmd.config.usage}`);
-    if (cmd.config.example) data.push(`**Example:** ${cmd.config.example}`);
+    embed.setColor('#3498db')
+        .setTitle('Help Command')
+        .setAuthor(devSettings.public.productName, DiscordBot.user.avatarURL, devSettings.public.productAddress)
+        .setTimestamp()
+        .setFooter('© SplitScreen.Me', DiscordBot.user.avatarURL);
+    if (cmd.config.name) embed.setDescription(`Help for the \`${prefix + cmd.config.name}\` command`);
+    if (cmd.config.description) embed.addFields({ name: 'Description', value: cmd.config.description } )
+    if (cmd.config.aliases) embed.addFields({name: 'Aliases' , value: cmd.config.aliases.join(` , `)})
+    if (cmd.config.aliases) embed.addFields({name: 'Usage  [mandatory] \<optional\>' , value: cmd.config.usage})
+    if (cmd.config.aliases) embed.addFields({name: 'Example' , value: cmd.config.example})
 
-    receivedMessage.channel.send(data);
+    receivedMessage.channel.send(embed);
 
     /*receivedMessage.channel.send({
 

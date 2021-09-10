@@ -6,5 +6,5 @@ if(Settings.private.DISCORD_BOT_SECRET_TOKEN && Settings.private.DISCORD_BOT_SEC
 DiscordInit(Settings.private.DISCORD_BOT_SECRET_TOKEN);
 
 }else{
-  console.log("[Error] No discord bot secret token set. Please, provide one. Aborting.");
+  console.log("[Error] No discord bot secret token set. Please provide one. Aborting.");
 }

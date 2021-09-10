@@ -6,7 +6,7 @@ const publicSSMApiPath = "https://hub.splitscreen.me/api/v1/";
 
 exports.config = {
     name: `invite`,
-    aliases: ["inv", "invite-link", "inv-link"],
+    aliases: ["i", "inv"],
     description: `Return invite link to the Nucleus Coop Discord`,
     usage: `${prefix}invite`,
     example: `${prefix}invite`

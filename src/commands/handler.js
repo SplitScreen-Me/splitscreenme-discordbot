@@ -14,16 +14,18 @@ exports.config = {
 exports.execute = async (DiscordBot, receivedMessage, args) => {
     // console.log([...args]);
     if (args.length === 0) {
-        receivedMessage.channel.send('Please, provide a game name.');
+        receivedMessage.channel.send('Please provide a game name.');
         return;
     }
 
     let totalGame = '';
     args.forEach(value => {
-        totalGame = totalGame + ' ' + value;
+        totalGame = `${totalGame} ${value.toLowerCase()}`;
     });
+    totalGame.toLowerCase()
     totalGame = totalGame.substr(1);
-    const allHandlers = await Axios.get(publicSSMApiPath + 'handlers/' + totalGame.replace(/[^a-z0-9 -]/g, ""));
+    console.log("totalGame: ", totalGame)
+    const allHandlers = await Axios.get(publicSSMApiPath + 'handlers/' + totalGame);
     if (!allHandlers.data.Handlers) {
         receivedMessage.channel.send('Sorry, no handler found matching your query!');
         return;
