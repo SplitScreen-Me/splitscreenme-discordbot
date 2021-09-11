@@ -4,7 +4,7 @@ import fs from "fs";
 const { prefix } = require('../src/utils.js');
 
 const publicSSMApiPath = "https://hub.splitscreen.me/api/v1/";
-const botPrefix = prefix;
+let botPrefix = prefix;
 const DiscordInit = secretDiscordToken => {
 
     const DiscordBot = new Discord.Client();
@@ -24,6 +24,7 @@ const DiscordInit = secretDiscordToken => {
         console.log("prefix = " + botPrefix);
         console.log('[Debug] Connected as ' + DiscordBot.user.tag);
         console.log('[Debug] Servers:');
+
         DiscordBot.guilds.cache.forEach((guild) => {
             console.log('[Debug]  - ' + guild.name);
         });
@@ -61,16 +62,26 @@ const DiscordInit = secretDiscordToken => {
     DiscordBot.login(secretDiscordToken);
 
     DiscordBot.on('message', async receivedMessage => {
+        let mentionRegex = receivedMessage.content.match(new RegExp(`^<@!?(${DiscordBot.user.id})>`, "gi"))
+        if(mentionRegex) {
+            botPrefix = `${mentionRegex}`
+        } else {
+            botPrefix = prefix
+        }
+
         if (receivedMessage.author.bot) return; //Will ignore bots and it-self
         if (!receivedMessage.content.startsWith(botPrefix)) return; //Ignore messages from users which not start with {botPrefix}
-        const fullCommand = receivedMessage.content.substr(1); // Remove the leading {botPrefix}
-        const splitCommand = fullCommand.split(' '); // Split the message up in to pieces for each space
+        const fullCommand = receivedMessage.content.substr(botPrefix.length); // Remove the leading {botPrefix}
+        const splitCommand = fullCommand.trim().split(' '); // Split the message up in to pieces for each space
         const args = splitCommand.slice(1); //arguments
         const commandName = splitCommand[0].toLowerCase(); // The first word directly after the {botPrefix} is the command or alias
         const command = //get the command based on a command or alias
             DiscordBot.commands.get(commandName) || DiscordBot.commands.find(cmd => cmd.config.aliases && cmd.config.aliases.includes(commandName));
 
+        console.log(`args => ${args}`);
+        console.log(`botPrefix.length => ${botPrefix.length}`);
         console.log(`commandName => ${commandName}`);
+        console.log(`command => ${command}`);
 
         if (command) {
             console.log("command recognized");
