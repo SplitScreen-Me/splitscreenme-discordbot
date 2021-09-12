@@ -40,7 +40,7 @@ exports.execute = async (DiscordBot, receivedMessage, args) => {
     const cmd = commands.get(name) || commands.find(c => c.config.aliases && c.config.aliases.includes(name));
 
     if (!cmd) {
-        receivedMessage.reply(`${name} is not a valid command`)
+        receivedMessage.reply(`${name} is NOT a valid command`)
         return;
     }
 

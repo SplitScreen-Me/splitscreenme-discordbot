@@ -73,7 +73,7 @@ const DiscordInit = secretDiscordToken => {
         console.log("botPrefix = " + botPrefix);
 
         if (receivedMessage.author.bot) return; //Will ignore bots and it-self
-        if (!receivedMessage.content.startsWith(botPrefix)) return; //Ignore messages from users which not start with {botPrefix}
+        if (!receivedMessage.content.startsWith(botPrefix)) return; //Ignore messages from users which don't start with {botPrefix}
         const fullCommand = receivedMessage.content.substr(botPrefix.length); // Remove the leading {botPrefix}
         const splitCommand = fullCommand.trim().split(' '); // Split the message up in to pieces for each space
         const args = splitCommand.slice(1); //arguments

@@ -22,15 +22,16 @@ exports.execute = async (DiscordBot, receivedMessage, args) => {
 
     if (Settings.private.DEVELOPMENT_CHANNELS.includes(receivedMessage.guild.id)) {
 
-        if(!args.length || !getAvailableHandlerTemplates().includes(args[0].toLowerCase())) {
-            let embed = createAndGetHelpEmbed(DiscordBot)
-            receivedMessage.reply(`${args.length ? `\`${args.join(" ")}\` is not a valid game engine.\n` : ``}Please provide a game engine.`, embed)
-            return
-        }
         // help command
         if(args[0] === "options" || args[0] === "help") {
             let embed = createAndGetHelpEmbed(DiscordBot)
-            receivedMessage.reply(embed);
+            receivedMessage.channel.send(embed);
+            return
+        }
+
+        if(!args.length || !getAvailableHandlerTemplates().includes(args[0].toLowerCase())) {
+            let embed = createAndGetHelpEmbed(DiscordBot)
+            receivedMessage.channel.send(`${args.length ? `\`${args.join(" ")}\` is NOT a valid game engine.\n` : ``}Please provide a game engine.`, embed)
             return
         }
 
