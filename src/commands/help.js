@@ -24,10 +24,10 @@ exports.execute = async (DiscordBot, receivedMessage, args) => {
             .setTitle('Help Command')
             .setAuthor(devSettings.public.productName, DiscordBot.user.avatarURL, devSettings.public.productAddress)
             .setDescription(`Here is a list of all my commands \n\n use \`${prefix}help <command name>\` to get info about a specific command`)
-            .addFields(
-                {
+            .addFields({
                     name: 'Commands (aliases)',
-                    value: `\`\`\`${prefix + commands.map(c => `${c.config.name} ${c.config.aliases.length ? '(' + c.config.aliases.join(`, `) + `)` : ""}`).join(`\n${prefix}`)}\`\`\`` },
+                    value: `\`\`\`${prefix + commands.map(c => `${c.config.name} ${c.config.aliases.length ? '(' + c.config.aliases.join(`, `) + `)` : ""}`).join(`\n${prefix}`)}\`\`\``
+                },
             )
             .setTimestamp()
             .setFooter('© SplitScreen.Me', DiscordBot.user.avatarURL);

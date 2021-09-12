@@ -8,8 +8,8 @@ exports.config = {
     name: `create`,
     aliases: [`c`, `make`],
     description: `Creates the handler for a chosen GameEngine. \nFor a list of supported Engines, use \`${prefix}create options\``,
-    // parameters: ``, //Parameters. For create command this will be all files in handler_tamplates
-    usage: `${prefix}create [engineName]`,
+    // parameters: ``, //Parameters. For create command this will be all files in handler_templates
+    usage: `${prefix}create [engineName] <@user>`,
     example: `${prefix}create CryEngine`
 }
 
@@ -17,6 +17,8 @@ exports.execute = async (DiscordBot, receivedMessage, args) => {
     console.log('settings: ', Settings.private.DEVELOPMENT_CHANNELS)
     console.log('received: ', receivedMessage.guild.id);
     console.log(`args`, args)
+
+    let userMentioned = receivedMessage.mentions.users.first()
 
     if (Settings.private.DEVELOPMENT_CHANNELS.includes(receivedMessage.guild.id)) {
 
@@ -33,7 +35,11 @@ exports.execute = async (DiscordBot, receivedMessage, args) => {
         }
 
         //normal command
-        receivedMessage.reply("Here's your template file!", { files: [`./src/handler_templates/${args}.js`] });
+        if(userMentioned) {
+            receivedMessage.channel.send(`<@!${userMentioned.id}> Here's your template file!`, { files: [`./src/handler_templates/${args[0]}.js`] })
+        } else {
+            receivedMessage.reply("Here's your template file!", { files: [`./src/handler_templates/${args[0]}.js`] });
+        }
 
     }
 };
