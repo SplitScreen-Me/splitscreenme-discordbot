@@ -11,7 +11,7 @@ exports.config = {
 
 exports.execute = async (DiscordBot, receivedMessage, args) => {
     console.log('settings: ', Settings.private.DEVELOPMENT_CHANNELS)
-    console.log('received: ', receivedMessage.guild.id);
+    console.log('received: ', receivedMessage.guild && receivedMessage.guild.id);
     console.log(`args`, args)
 
     receivedMessage.reply("\nhttps://discord.gg/a9ssM5pxTW")

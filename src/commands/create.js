@@ -1,7 +1,8 @@
 import Settings from "../../src/settings"
 import fs from "fs";
-const { prefix } = require('../../src/utils.js');
-const { MessageEmbed } = require('discord.js');
+
+const {prefix} = require('../../src/utils.js');
+const {MessageEmbed} = require('discord.js');
 import devSettings from '../../settings-development'
 
 exports.config = {
@@ -15,33 +16,29 @@ exports.config = {
 
 exports.execute = async (DiscordBot, receivedMessage, args) => {
     console.log('settings: ', Settings.private.DEVELOPMENT_CHANNELS)
-    console.log('received: ', receivedMessage.guild.id);
+    console.log('received: ', receivedMessage.guild && receivedMessage.guild.id);
     console.log(`args`, args)
 
     let userMentioned = receivedMessage.mentions.users.first()
 
-    if (Settings.private.DEVELOPMENT_CHANNELS.includes(receivedMessage.guild.id)) {
+    // help command
+    if (args[0] === "options" || args[0] === "help") {
+        let embed = createAndGetHelpEmbed(DiscordBot)
+        receivedMessage.channel.send(embed);
+        return
+    }
 
-        // help command
-        if(args[0] === "options" || args[0] === "help") {
-            let embed = createAndGetHelpEmbed(DiscordBot)
-            receivedMessage.channel.send(embed);
-            return
-        }
+    if (!args.length || !getAvailableHandlerTemplates().includes(args[0].toLowerCase())) {
+        let embed = createAndGetHelpEmbed(DiscordBot)
+        receivedMessage.channel.send(`${args.length ? `\`${args.join(" ")}\` is NOT a valid game engine.\n` : ``}Please provide a game engine.`, embed)
+        return
+    }
 
-        if(!args.length || !getAvailableHandlerTemplates().includes(args[0].toLowerCase())) {
-            let embed = createAndGetHelpEmbed(DiscordBot)
-            receivedMessage.channel.send(`${args.length ? `\`${args.join(" ")}\` is NOT a valid game engine.\n` : ``}Please provide a game engine.`, embed)
-            return
-        }
-
-        //normal command
-        if(userMentioned) {
-            receivedMessage.channel.send(`<@!${userMentioned.id}> Here's your template file!`, { files: [`./src/handler_templates/${args[0]}.js`] })
-        } else {
-            receivedMessage.reply("Here's your template file!", { files: [`./src/handler_templates/${args[0]}.js`] });
-        }
-
+    //normal command
+    if (userMentioned) {
+        receivedMessage.channel.send(`<@!${userMentioned.id}> Here's your template file!`, {files: [`./src/handler_templates/${args[0]}.js`]})
+    } else {
+        receivedMessage.reply("Here's your template file!", {files: [`./src/handler_templates/${args[0]}.js`]});
     }
 };
 
