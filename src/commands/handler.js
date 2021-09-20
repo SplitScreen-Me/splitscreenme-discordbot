@@ -9,12 +9,12 @@ exports.config = {
     aliases: [`h`, `script`],
     description: `Return handler for the specified game.`,
     usage: `${prefix}handler [game name]`,
-    example: `${prefix}handler Grand Theft Auto V`
+    example: `${prefix}handler Borderlands`
 }
 
 exports.execute = async (DiscordBot, receivedMessage, args) => {
     console.log('settings: ', Settings.private.DEVELOPMENT_CHANNELS)
-    console.log('received: ', receivedMessage.guild.id);
+    console.log('received: ', receivedMessage.guild && receivedMessage.guild.id);
     console.log(`args`, args)
 
     if (!args.length) {

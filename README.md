@@ -21,7 +21,10 @@ Feel free to **contribute & help** us build the most amazing **bot for splitscre
 
 > The bot is public, anyone can invite it to its own Discord server.
 
-Meanings `<optional>` `[obligatory]`
+| Available parameter types | Explanation        |
+| ------------------------- | ------------------ |
+| < >                       | Optional parameter |
+| [ ]                       | Required parameter |
 
 Help `-help <command name>`
 
