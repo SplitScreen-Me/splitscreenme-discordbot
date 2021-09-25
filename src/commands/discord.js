@@ -5,8 +5,8 @@ exports.config = {
     name: `discord`,
     aliases: [`d`, `disc`],
     description: `Return invite link to the Nucleus Coop Discord`,
-    usage: `${prefix}invite`,
-    example: `${prefix}invite`
+    usage: `${prefix}discord`,
+    example: `${prefix}discord`
 }
 
 exports.execute = async (DiscordBot, receivedMessage, args) => {

@@ -36,7 +36,7 @@ exports.execute = async (DiscordBot, receivedMessage, args) => {
 
     //normal command
     if (userMentioned) {
-        receivedMessage.channel.send(`<@!${userMentioned.id}> Here's your template file!`, {files: [`./src/handler_templates/${args[0]}.js`]})
+        receivedMessage.channel.send(`<@!${userMentioned.id}> Here's your template file!`, {files: [`../src/handler_templates/${args[0]}.js`]})
     } else {
         receivedMessage.reply("Here's your template file!", {files: [`./src/handler_templates/${args[0]}.js`]});
     }

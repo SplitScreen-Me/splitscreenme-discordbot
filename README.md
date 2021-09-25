@@ -21,21 +21,26 @@ Feel free to **contribute & help** us build the most amazing **bot for splitscre
 
 > The bot is public, anyone can invite it to its own Discord server.
 
+### Parameter types
 | Available parameter types | Explanation        |
 | ------------------------- | ------------------ |
 | < >                       | Optional parameter |
 | [ ]                       | Required parameter |
 
-Help `-help <command name>`
+### Commands
+| Command name  | Aliases                            | Usage                                         | Example Usage                                                            |
+| ------------- | ---------------------------------- | --------------------------------------------- | ------------------------------------------------------------------------ |
+| help          | `cmds`, `commands`, `halp`         | ${prefix}help {command_name}                  | Shows a list of all available bot commands                               |
+| handler       | `h`, `script`                      | ${prefix}handler Borderlands                  | Return handler for the specified game.                                   |
+| create        | `c`, `make`                        | ${prefix}create [engineName] <@user>          | Creates the handler for a chosen GameEngine. For a list of supported Engines, use ${prefix}create options |
+| discord       | `d`, `disc`                        | ${prefix}discord                              | Return invite link to the Nucleus Coop Discord                           |
+| hubstats      |                                    | ${prefix}hubstats                             | Return stats from the hub                                                |
 
-Handler search `-handler [My game name]`
-
-Create script template `-create [GameEngineName]`
-
-Hubstats `-hubstats`
-
-Invite to the discord `-invite`
-
-Handler research `-handler [My game name]`
-
-![image](https://user-images.githubusercontent.com/43886029/132925660-a119cc76-1703-47cc-bde8-76d4ba1af44f.png)
+### Examples
+| Commmand            | Screenshot                                                                                                                |
+| --------------------| ------------------------------------------------------------------------------------------------------------------------- |
+| -help               | ![-help](https://user-images.githubusercontent.com/43886029/134237392-205043e3-0619-4852-99c9-0cfbcba177b5.png)           |
+| -h left 4 dead      | ![-h left 4 dead](https://user-images.githubusercontent.com/43886029/134236654-dd8e888c-9b16-481e-ba41-3cc62e18f949.png)  |
+| -c diesel           | ![-c diesel](https://user-images.githubusercontent.com/43886029/134236614-02f5386e-831a-4d60-84bd-35680d7a675c.png)       |
+| -d                  | ![-d](https://user-images.githubusercontent.com/43886029/134236851-d11db3dc-8853-4f32-9c3a-e0d10d084e6c.png)              |
+| -hubstats           | ![-hubstats](https://user-images.githubusercontent.com/43886029/134237049-0c361f13-f69d-40c9-8f5e-f1cb9c0ebb8f.png)       |
