@@ -1,4 +1,4 @@
-﻿# SplitScreen.Me Discord Bot 🤖
+# SplitScreen.Me Discord Bot 🤖
 <img src="https://www.splitscreen.me/img/splitscreen-me-logo.png" alt="SplitScreen.Me Logo" width="100" height="100"></img>
 
 ![CI/CD](https://github.com/SplitScreen-Me/splitscreenme-discordbot/workflows/CI/badge.svg)
@@ -44,3 +44,31 @@ Feel free to **contribute & help** us build the most amazing **bot for splitscre
 | -c diesel           | ![-c diesel](https://user-images.githubusercontent.com/43886029/134236614-02f5386e-831a-4d60-84bd-35680d7a675c.png)       |
 | -d                  | ![-d](https://user-images.githubusercontent.com/43886029/134236851-d11db3dc-8853-4f32-9c3a-e0d10d084e6c.png)              |
 | -hubstats           | ![-hubstats](https://user-images.githubusercontent.com/43886029/134237049-0c361f13-f69d-40c9-8f5e-f1cb9c0ebb8f.png)       |
+
+
+
+## Setup and Contributing
+Everyone's welcome to contribute!
+
+### Create and invite  Discord bot/application
+To run the bot locally, you need to create a [Discord bot](https://discord.com/developers/applications) through the Discord developer portal, and invite it to your server.
+Watch the first 2 minutes of this video, to see how: https://youtu.be/JMmUW4d3Noc
+
+### Adding DISCORD_BOT_SECRET_TOKEN
+From the [Discord bot](https://discord.com/developers/applications) you just made, copy the token for your bot into the value field of `DISCORD_BOT_SECRET_TOKEN` in [settings-development.json](settings-development.json). To select which channels you want the bot to access, copy the channel id's into the `DEVELOPMENT_CHANNELS` array, in the same file.
+
+### Running locally
+to run the bot, run this in the terminal
+
+**Development:**
+```console
+yarn install
+yarn start run:dev
+```
+**Production:**
+
+```console
+yarn install
+yarn start run:prod
+```
+
