@@ -1,0 +1,11 @@
+{
+  "recommendations": [
+    "esbenp.prettier-vscode",
+    "yzhang.markdown-all-in-one",
+    "bierner.markdown-preview-github-styles",
+    "bierner.markdown-emoji",
+    "darkriszty.markdown-table-prettify",
+    "eamodio.gitlens",
+    "github.vscode-pull-request-github"
+  ]
+}
