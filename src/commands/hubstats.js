@@ -33,5 +33,5 @@ exports.execute = async (DiscordBot, receivedMessage, args) => {
     .setFooter('© SplitScreen.Me', DiscordBot.user.avatarURL)
     .addFields({ name: 'Stats', value: totalDownloadCountEver.data });
 
-  receivedMessage.channel.send(embed);
+  receivedMessage.channel.send({ embeds: [embed] });
 };

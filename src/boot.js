@@ -119,7 +119,7 @@ const DiscordInit = (secretDiscordToken) => {
         .setDescription(
           `I connect with Splitscreen.me to get you data for handles, statistics, and answer questions you may have! If you would like you see a list of my commands, please do \`${prefix}help\``,
         );
-      receivedMessage.channel.send(embed);
+      receivedMessage.channel.send({ embeds: [embed] });
     } else if (
       !command &&
       fullCommand.length > 0 &&

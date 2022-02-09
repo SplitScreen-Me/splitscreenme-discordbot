@@ -32,7 +32,7 @@ exports.execute = async (DiscordBot, receivedMessage, args) => {
   // help command
   if (args[0] === 'options' || args[0] === 'help') {
     let embed = createAndGetHelpEmbed(DiscordBot);
-    receivedMessage.channel.send(embed);
+    receivedMessage.channel.send({ embeds: [embed] });
     return;
   }
 

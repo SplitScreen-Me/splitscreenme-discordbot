@@ -50,7 +50,7 @@ exports.execute = async (DiscordBot, receivedMessage, args) => {
       .setTimestamp()
       .setFooter('© SplitScreen.Me', DiscordBot.user.avatarURL);
 
-    receivedMessage.channel.send(embed);
+    receivedMessage.channel.send({ embeds: [embed] });
     return;
   }
 
@@ -97,5 +97,5 @@ exports.execute = async (DiscordBot, receivedMessage, args) => {
       value: `\`\`\`${cmd.config.example}\`\`\``,
     });
 
-  receivedMessage.channel.send(embed);
+  receivedMessage.channel.send({ embeds: [embed] });
 };
