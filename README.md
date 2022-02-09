@@ -61,12 +61,12 @@ to run the bot, run this in the terminal
 **Development:**
 ```console
 yarn install
-yarn start run:dev
+yarn run start:dev
 ```
 **Production:**
 
 ```console
 yarn install
-yarn start run:prod
+yarn run start:prod
 ```
 
