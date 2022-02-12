@@ -1,14 +1,19 @@
 import Discord from 'discord.js';
 import Axios from 'axios';
 import fs from 'fs';
-const { prefix } = require('../src/utils.js');
-const { MessageEmbed } = require('discord.js');
-import devSettings from '../settings-development';
+import { prefix } from './utils.js';
+import { MessageEmbed } from 'discord.js';
+import devSettings from '../settings-development.json' assert { type: 'json' };
 
 const publicSSMApiPath = 'https://hub.splitscreen.me/api/v1/';
 let botPrefix = prefix;
 const DiscordInit = (secretDiscordToken) => {
-  const DiscordBot = new Discord.Client();
+  const DiscordBot = new Discord.Client({
+    intents: [
+      Discord.Intents.FLAGS.GUILDS,
+      Discord.Intents.FLAGS.GUILD_MESSAGES,
+    ],
+  });
 
   DiscordBot.commands = new Discord.Collection();
 
@@ -16,7 +21,7 @@ const DiscordInit = (secretDiscordToken) => {
     .readdirSync('./src/commands')
     .filter((file) => file.endsWith('.js'));
   for (const file of commandFiles) {
-    const command = require(`./commands/${file}`);
+    const command = import(`./commands/${file}`);
     const commandName = file.split('.')[0];
     console.log(commandName);
 
@@ -68,7 +73,7 @@ const DiscordInit = (secretDiscordToken) => {
 
   DiscordBot.login(secretDiscordToken);
 
-  DiscordBot.on('message', async (receivedMessage) => {
+  DiscordBot.on('messageCreate', async (receivedMessage) => {
     let mentionRegex = receivedMessage.content.match(
       new RegExp(`^<@!?(${DiscordBot.user.id})>`, 'gi'),
     );

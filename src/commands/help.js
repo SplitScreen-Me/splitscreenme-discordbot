@@ -1,16 +1,16 @@
-import Settings from '../settings';
-const { prefix } = require('../../src/utils.js');
-const { MessageEmbed } = require('discord.js');
-import devSettings from '../../settings-development';
+import Settings from '../settings.js';
+import { prefix } from '../../src/utils.js';
+import { MessageEmbed } from 'discord.js';
+import devSettings from '../../settings-development.json' assert { type: 'json' };
 
-exports.config = {
+export const config = {
   name: `help`,
   aliases: [`cmds`, `commands`, `halp`],
   description: `Shows a list of all available bot commands`,
   usage: `${prefix}help {command_name}`,
   example: `${prefix}help handler`,
 };
-exports.execute = async (DiscordBot, receivedMessage, args) => {
+export const execute = async (DiscordBot, receivedMessage, args) => {
   console.log('settings: ', Settings.private.DEVELOPMENT_CHANNELS);
   console.log('received: ', receivedMessage.guild && receivedMessage.guild.id);
   console.log(`args`, args);

@@ -1,10 +1,10 @@
 import Axios from 'axios';
-import Settings from '../settings';
-const { prefix } = require('../../src/utils.js');
+import Settings from '../settings.js';
+import { prefix } from '../../src/utils.js';
 
 const publicSSMApiPath = 'https://hub.splitscreen.me/api/v1/';
 
-exports.config = {
+export const config = {
   name: `handler`,
   aliases: [`h`, `script`],
   description: `Return handler for the specified game.`,
@@ -12,7 +12,7 @@ exports.config = {
   example: `${prefix}handler Borderlands`,
 };
 
-exports.execute = async (DiscordBot, receivedMessage, args) => {
+export const execute = async (DiscordBot, receivedMessage, args) => {
   console.log('settings: ', Settings.private.DEVELOPMENT_CHANNELS);
   console.log('received: ', receivedMessage.guild && receivedMessage.guild.id);
   console.log(`args`, args);

@@ -1,5 +1,5 @@
-import Settings from './src/settings';
-import DiscordInit from './src/boot';
+import Settings from './src/settings.js';
+import DiscordInit from './src/boot.js';
 
 if (
   Settings.private.DISCORD_BOT_SECRET_TOKEN &&
