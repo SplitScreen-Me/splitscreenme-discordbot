@@ -4,7 +4,7 @@ import { prefix } from '../utils.js';
 import { MessageEmbed } from 'discord.js';
 import devSettings from '../../settings-development.json' assert { type: 'json' };
 
-module.exports.config = {
+export const config = {
   name: `create`,
   aliases: [`c`, `make`],
   description: `Creates the handler for a chosen GameEngine. \nFor a list of supported Engines, use \`${prefix}create options\``,
@@ -13,7 +13,7 @@ module.exports.config = {
   example: `${prefix}create CryEngine`,
 };
 
-exports.execute = async (DiscordBot, receivedMessage, args) => {
+export const execute = async (DiscordBot, receivedMessage, args) => {
   console.log('settings: ', Settings.private.DEVELOPMENT_CHANNELS);
   console.log('received: ', receivedMessage.guild && receivedMessage.guild.id);
   console.log(`args`, args);

@@ -46,7 +46,7 @@ export const execute = async (DiscordBot, receivedMessage, args) => {
   foundHandlers.forEach((handler) => {
     downloadLink = `https://hub.splitscreen.me/cdn/storage/packages/${handler.currentPackage}/original/handler-${handler._id}-v${handler.currentVersion}.nc?download=true`;
     receivedMessage.channel.send({
-      embed: {
+      embeds: [{
         color: 3447003,
         author: {
           name: DiscordBot.user.username,
@@ -66,12 +66,12 @@ export const execute = async (DiscordBot, receivedMessage, args) => {
           {
             name: 'Hotness',
             inline: true,
-            value: handler.stars,
+            value: handler.stars.toString(),
           },
           {
             name: 'Total downloads',
             inline: true,
-            value: handler.downloadCount,
+            value: handler.downloadCount.toString(),
           },
           {
             name: 'Status',
@@ -89,7 +89,7 @@ export const execute = async (DiscordBot, receivedMessage, args) => {
           icon_url: DiscordBot.user.avatarURL,
           text: '© SplitScreen.Me',
         },
-      },
+      }],
     });
   });
 };

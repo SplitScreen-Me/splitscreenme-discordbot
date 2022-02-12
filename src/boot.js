@@ -7,7 +7,7 @@ import devSettings from '../settings-development.json' assert { type: 'json' };
 
 const publicSSMApiPath = 'https://hub.splitscreen.me/api/v1/';
 let botPrefix = prefix;
-const DiscordInit = (secretDiscordToken) => {
+const DiscordInit = async (secretDiscordToken) => {
   const DiscordBot = new Discord.Client({
     intents: [
       Discord.Intents.FLAGS.GUILDS,
@@ -21,7 +21,7 @@ const DiscordInit = (secretDiscordToken) => {
     .readdirSync('./src/commands')
     .filter((file) => file.endsWith('.js'));
   for (const file of commandFiles) {
-    const command = import(`./commands/${file}`);
+    const command = await import(`./commands/${file}`);
     const commandName = file.split('.')[0];
     console.log(commandName);
 
@@ -96,14 +96,16 @@ const DiscordInit = (secretDiscordToken) => {
         (cmd) => cmd.config.aliases && cmd.config.aliases.includes(commandName),
       );
 
+
     console.log(`args => ${args}`);
     console.log(`botPrefix.length => ${botPrefix.length}`);
     console.log(`commandName => ${commandName}`);
-    console.log(`command => ${command}`);
+    // console.log(`command => ${command}`);
 
     if (command) {
       console.log('command recognized');
       try {
+
         command.execute(DiscordBot, receivedMessage, args);
       } catch (error) {
         console.error(error);
