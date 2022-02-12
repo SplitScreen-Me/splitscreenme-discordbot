@@ -1,11 +1,10 @@
-import Settings from '../../src/settings';
+import Settings from '../settings.js';
 import fs from 'fs';
+import { prefix } from '../utils.js';
+import { MessageEmbed } from 'discord.js';
+import devSettings from '../../settings-development.json' assert { type: 'json' };
 
-const { prefix } = require('../../src/utils.js');
-const { MessageEmbed } = require('discord.js');
-import devSettings from '../../settings-development';
-
-exports.config = {
+module.exports.config = {
   name: `create`,
   aliases: [`c`, `make`],
   description: `Creates the handler for a chosen GameEngine. \nFor a list of supported Engines, use \`${prefix}create options\``,

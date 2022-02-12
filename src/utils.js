@@ -1,1 +1,1 @@
-exports.prefix = '-';
+export const prefix = '-';

@@ -8,7 +8,11 @@
     "productAddress": "https://www.splitscreen.me/"
   },
   "private": {
-    "DISCORD_BOT_SECRET_TOKEN": "",
-    "DEVELOPMENT_CHANNELS": []
+    "DISCORD_BOT_SECRET_TOKEN": "ODE4MjMyMTMyODExNDg5MzAw.YEVEDg.ojeMMwBbp_4IDLxedgjGMP76aM8",
+    "DEVELOPMENT_CHANNELS": [
+      "647855178715758633",
+      "819138679984881714",
+      "647411844239196171"
+    ]
   }
 }
