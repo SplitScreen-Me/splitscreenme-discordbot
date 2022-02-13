@@ -29,7 +29,14 @@ export const execute = async (DiscordBot, receivedMessage, args) => {
         URL: devSettings.public.productAddress,
       })
       .setDescription(
-        `Here is a list of all my commands \n\n use \`${prefix}help <command name>\` to get info about a specific command`,
+        `Here is a list of all my commands
+        
+        use \`${prefix}help <command_name>\` or  \`${prefix}help <alias_name>\` to get info about a specific command.
+
+        For example: 
+        \`${prefix}help ${commands.first().config.name}\` 
+        or 
+        \`${prefix}help ${commands.first().config.aliases[0]}\``,
       )
       .addFields({
         name: 'Commands (aliases)',
