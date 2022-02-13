@@ -23,11 +23,11 @@ export const execute = async (DiscordBot, receivedMessage, args) => {
     embed
       .setColor('#3498db')
       .setTitle('Help Command')
-      .setAuthor(
-        devSettings.public.productName,
-        DiscordBot.user.avatarURL,
-        devSettings.public.productAddress,
-      )
+      .setAuthor({
+        name: devSettings.public.productName,
+        iconURL: DiscordBot.user.avatarURL,
+        URL: devSettings.public.productAddress,
+      })
       .setDescription(
         `Here is a list of all my commands \n\n use \`${prefix}help <command name>\` to get info about a specific command`,
       )
@@ -48,7 +48,10 @@ export const execute = async (DiscordBot, receivedMessage, args) => {
         }\`\`\``,
       })
       .setTimestamp()
-      .setFooter('© SplitScreen.Me', DiscordBot.user.avatarURL);
+      .setFooter({
+        text: '© SplitScreen.Me',
+        iconURL: DiscordBot.user.avatarURL,
+      });
 
     receivedMessage.channel.send({ embeds: [embed] });
     return;
@@ -67,13 +70,16 @@ export const execute = async (DiscordBot, receivedMessage, args) => {
   embed
     .setColor('#3498db')
     .setTitle('Help Command')
-    .setAuthor(
-      devSettings.public.productName,
-      DiscordBot.user.avatarURL,
-      devSettings.public.productAddress,
-    )
+    .setAuthor({
+      name: devSettings.public.productName,
+      iconURL: DiscordBot.user.avatarURL,
+      URL: devSettings.public.productAddress,
+    })
     .setTimestamp()
-    .setFooter('© SplitScreen.Me', DiscordBot.user.avatarURL);
+    .setFooter({
+      text: '© SplitScreen.Me',
+      iconURL: DiscordBot.user.avatarURL,
+    });
   if (cmd.config.name)
     embed.setDescription(
       `Help for the \`${prefix + cmd.config.name}\` command`,
@@ -90,7 +96,6 @@ export const execute = async (DiscordBot, receivedMessage, args) => {
       name: 'Usage  [mandatory] <optional>',
       value: `\`\`\`${cmd.config.usage}\`\`\``,
     });
-  //if (cmd.config.aliases) embed.addFields({ name: 'Parameters' , value: `\`\`\`${cmd.config.parameters}\`\`\`` } )
   if (cmd.config.example)
     embed.addFields({
       name: 'Example',

@@ -24,13 +24,16 @@ export const execute = async (DiscordBot, receivedMessage, args) => {
   embed
     .setColor('#3498db')
     .setTitle('Hub Stats')
-    .setAuthor(
-      devSettings.public.productName,
-      DiscordBot.user.avatarURL,
-      devSettings.public.productAddress,
-    )
+    .setAuthor({
+      name: devSettings.public.productName,
+      iconURL: DiscordBot.user.avatarURL,
+      URL: devSettings.public.productAddress,
+    })
     .setTimestamp()
-    .setFooter('© SplitScreen.Me', DiscordBot.user.avatarURL)
+    .setFooter({
+      text: '© SplitScreen.Me',
+      iconURL: DiscordBot.user.avatarURL.toString,
+    })
     .addFields({ name: 'Stats', value: totalDownloadCountEver.data });
 
   receivedMessage.channel.send({ embeds: [embed] });
