@@ -1,1 +1,1 @@
-exports.prefix = "-"
+exports.prefix = '-';

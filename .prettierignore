@@ -1,0 +1,5 @@
+package.json
+.idea/
+node_modules/
+*.md
+src/handler_templates/

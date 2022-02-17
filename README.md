@@ -46,9 +46,7 @@ Feel free to **contribute & help** us build the most amazing **bot for splitscre
 | -hubstats           | ![-hubstats](https://user-images.githubusercontent.com/43886029/134237049-0c361f13-f69d-40c9-8f5e-f1cb9c0ebb8f.png)       |
 
 
-
-## Setup and Contributing
-Everyone's welcome to contribute!
+## Building 🚧
 
 ### Create and invite  Discord bot/application
 To run the bot locally, you need to create a [Discord bot](https://discord.com/developers/applications) through the Discord developer portal, and invite it to your server.
