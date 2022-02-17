@@ -42,7 +42,7 @@ export const execute = async (DiscordBot, receivedMessage, args) => {
     allHandlers.data.Handlers.length > 3
       ? allHandlers.data.Handlers.slice(0, 3)
       : allHandlers.data.Handlers;
-  var downloadLink = ' ';
+  let downloadLink = ' ';
   foundHandlers.forEach((handler) => {
     downloadLink = `https://hub.splitscreen.me/cdn/storage/packages/${handler.currentPackage}/original/handler-${handler._id}-v${handler.currentVersion}.nc?download=true`;
     receivedMessage.channel.send({
