@@ -1,10 +1,10 @@
 import Axios from 'axios';
-import Settings from '../settings';
-const { prefix } = require('../../src/utils.js');
+import Settings from '../settings.js';
+import { prefix } from '../../src/utils.js';
 
 const publicSSMApiPath = 'https://hub.splitscreen.me/api/v1/';
 
-exports.config = {
+export const config = {
   name: `handler`,
   aliases: [`h`, `script`],
   description: `Return handler for the specified game.`,
@@ -12,7 +12,7 @@ exports.config = {
   example: `${prefix}handler Borderlands`,
 };
 
-exports.execute = async (DiscordBot, receivedMessage, args) => {
+export const execute = async (DiscordBot, receivedMessage, args) => {
   console.log('settings: ', Settings.private.DEVELOPMENT_CHANNELS);
   console.log('received: ', receivedMessage.guild && receivedMessage.guild.id);
   console.log(`args`, args);
@@ -42,54 +42,56 @@ exports.execute = async (DiscordBot, receivedMessage, args) => {
     allHandlers.data.Handlers.length > 3
       ? allHandlers.data.Handlers.slice(0, 3)
       : allHandlers.data.Handlers;
-  var downloadLink = ' ';
+  let downloadLink = ' ';
   foundHandlers.forEach((handler) => {
     downloadLink = `https://hub.splitscreen.me/cdn/storage/packages/${handler.currentPackage}/original/handler-${handler._id}-v${handler.currentVersion}.nc?download=true`;
     receivedMessage.channel.send({
-      embed: {
-        color: 3447003,
-        author: {
-          name: DiscordBot.user.username,
-          icon_url: DiscordBot.user.avatarURL,
+      embeds: [
+        {
+          color: 3447003,
+          author: {
+            name: DiscordBot.user.username,
+            icon_url: DiscordBot.user.avatarURL,
+          },
+          title: handler.gameName,
+          url: `https://hub.splitscreen.me/handler/${handler._id}`,
+          thumbnail: {
+            url: `https://images.igdb.com/igdb/image/upload/t_cover_big/${handler.gameCover}.jpg`,
+          },
+          fields: [
+            {
+              name: 'Author',
+              inline: true,
+              value: `[${handler.ownerName}](https://hub.splitscreen.me/user/${handler.owner})`,
+            },
+            {
+              name: 'Hotness',
+              inline: true,
+              value: handler.stars.toString(),
+            },
+            {
+              name: 'Total downloads',
+              inline: true,
+              value: handler.downloadCount.toString(),
+            },
+            {
+              name: 'Status',
+              inline: true,
+              value: handler.verified ? 'Verified' : 'Unverified',
+            },
+            {
+              name: `Download`,
+              inline: false,
+              value: `[Download Handler (v${handler.currentVersion})](${downloadLink})`,
+            },
+          ],
+          timestamp: new Date(),
+          footer: {
+            icon_url: DiscordBot.user.avatarURL,
+            text: '© SplitScreen.Me',
+          },
         },
-        title: handler.gameName,
-        url: `https://hub.splitscreen.me/handler/${handler._id}`,
-        thumbnail: {
-          url: `https://images.igdb.com/igdb/image/upload/t_cover_big/${handler.gameCover}.jpg`,
-        },
-        fields: [
-          {
-            name: 'Author',
-            inline: true,
-            value: `[${handler.ownerName}](https://hub.splitscreen.me/user/${handler.owner})`,
-          },
-          {
-            name: 'Hotness',
-            inline: true,
-            value: handler.stars,
-          },
-          {
-            name: 'Total downloads',
-            inline: true,
-            value: handler.downloadCount,
-          },
-          {
-            name: 'Status',
-            inline: true,
-            value: handler.verified ? 'Verified' : 'Unverified',
-          },
-          {
-            name: `Download`,
-            inline: false,
-            value: `[Download Handler (v${handler.currentVersion})](${downloadLink})`,
-          },
-        ],
-        timestamp: new Date(),
-        footer: {
-          icon_url: DiscordBot.user.avatarURL,
-          text: '© SplitScreen.Me',
-        },
-      },
+      ],
     });
   });
 };

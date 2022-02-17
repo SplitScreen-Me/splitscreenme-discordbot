@@ -1,4 +1,4 @@
-import devSettings from '../settings-development';
+import devSettings from '../settings-development.json' assert { type: 'json' };
 
 const Settings = {
   private: { ...devSettings.private },

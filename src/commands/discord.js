@@ -1,7 +1,7 @@
-import Settings from '../../src/settings';
-const { prefix } = require('../../src/utils.js');
+import Settings from '../../src/settings.js';
+import { prefix } from '../../src/utils.js';
 
-exports.config = {
+export const config = {
   name: `discord`,
   aliases: [`d`, `disc`],
   description: `Return invite link to the Nucleus Coop Discord`,
@@ -9,7 +9,7 @@ exports.config = {
   example: `${prefix}discord`,
 };
 
-exports.execute = async (DiscordBot, receivedMessage, args) => {
+export const execute = async (DiscordBot, receivedMessage, args) => {
   console.log('settings: ', Settings.private.DEVELOPMENT_CHANNELS);
   console.log('received: ', receivedMessage.guild && receivedMessage.guild.id);
   console.log(`args`, args);

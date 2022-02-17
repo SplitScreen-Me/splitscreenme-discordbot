@@ -1,20 +1,18 @@
-import Settings from '../../src/settings';
+import Settings from '../settings.js';
 import fs from 'fs';
+import { prefix } from '../utils.js';
+import { MessageEmbed } from 'discord.js';
+import devSettings from '../../settings-development.json' assert { type: 'json' };
 
-const { prefix } = require('../../src/utils.js');
-const { MessageEmbed } = require('discord.js');
-import devSettings from '../../settings-development';
-
-exports.config = {
+export const config = {
   name: `create`,
   aliases: [`c`, `make`],
   description: `Creates the handler for a chosen GameEngine. \nFor a list of supported Engines, use \`${prefix}create options\``,
-  // parameters: ``, //Parameters. For create command this will be all files in handler_templates
   usage: `${prefix}create [engineName] <@user>`,
   example: `${prefix}create CryEngine`,
 };
 
-exports.execute = async (DiscordBot, receivedMessage, args) => {
+export const execute = async (DiscordBot, receivedMessage, args) => {
   console.log('settings: ', Settings.private.DEVELOPMENT_CHANNELS);
   console.log('received: ', receivedMessage.guild && receivedMessage.guild.id);
   console.log(`args`, args);
@@ -29,33 +27,27 @@ exports.execute = async (DiscordBot, receivedMessage, args) => {
    */
   let userMentioned = receivedMessage.mentions.users.first();
 
-  // help command
-  if (args[0] === 'options' || args[0] === 'help') {
-    let embed = createAndGetHelpEmbed(DiscordBot);
-    receivedMessage.channel.send(embed);
-    return;
-  }
-
   // NOT valid game engine
   if (!args.length || !getAvailableHandlerTemplates().includes(args[0])) {
     let embed = createAndGetHelpEmbed(DiscordBot);
-    receivedMessage.channel.send(
-      `${
+    receivedMessage.channel.send({
+      content: `${
         args.length ? `\`${args.join(' ')}\` is NOT a valid game engine.\n` : ``
-      }Please provide a game engine.`,
-      embed,
-    );
+      } Please provide a game engine.`,
+      embeds: [embed],
+    });
     return;
   }
 
   //normal command
   if (userMentioned) {
-    receivedMessage.channel.send(
-      `<@!${userMentioned.id}> Here's your template file!`,
-      { files: [`./src/handler_templates/${args[0]}.js`] },
-    );
+    receivedMessage.channel.send({
+      content: `<@!${userMentioned.id}> Here's your template file!`,
+      files: [`./src/handler_templates/${args[0]}.js`],
+    });
   } else {
-    receivedMessage.reply("Here's your template file!", {
+    receivedMessage.reply({
+      content: "Here's your template file!",
       files: [`./src/handler_templates/${args[0]}.js`],
     });
   }
@@ -67,14 +59,14 @@ function createAndGetHelpEmbed(DiscordBot) {
   embed
     .setColor('#3498db')
     .setTitle(`Create Options`)
-    .setAuthor(
-      devSettings.public.productName,
-      DiscordBot.user.avatarURL,
-      devSettings.public.productAddress,
-    )
+    .setAuthor({
+      name: devSettings.public.productName,
+      iconURL: DiscordBot.user.avatarURL,
+      URL: devSettings.public.productAddress,
+    })
     .setTimestamp()
     .setDescription(`Here are the possible options for the create command`)
-    .setFooter(`© SplitScreen.Me`, DiscordBot.user.avatarURL)
+    .setFooter({ text: '© SplitScreen.Me', iconURL: DiscordBot.user.avatarURL })
     .addFields(
       { name: `Tip`, value: `Copy the engine name to get the right casing.` },
       {

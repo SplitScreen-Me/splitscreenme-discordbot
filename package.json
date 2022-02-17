@@ -1,22 +1,23 @@
 {
+  "type": "module",
   "name": "splitscreenme-discordbot",
   "version": "1.0.0",
   "description": "",
   "main": "bot.js",
   "scripts": {
-    "start:dev": "nodemon --exec \"node -r esm\" ./bot.js",
-    "start:prod": "node -r esm ./bot.js --production",
+    "start:dev": "nodemon --exec \"node --experimental-json-modules ./bot.js\"",
+    "start:prod": "node --experimental-json-modules ./bot.js --production",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
   "author": "Rémi MACH <r-mach>",
   "license": "ISC",
   "dependencies": {
-    "axios": "^0.19.2",
-    "discord.js": "^12.5.3",
-    "esm": "^3.2.25"
+    "axios": "^0.26.0",
+    "discord.js": "^13.6.0"
   },
   "devDependencies": {
-    "nodemon": "^2.0.3"
+    "@types/node": "12",
+    "nodemon": "^2.0.15"
   }
 }

@@ -1,16 +1,16 @@
-import Settings from '../settings';
-const { prefix } = require('../../src/utils.js');
-const { MessageEmbed } = require('discord.js');
-import devSettings from '../../settings-development';
+import Settings from '../settings.js';
+import { prefix } from '../../src/utils.js';
+import { MessageEmbed } from 'discord.js';
+import devSettings from '../../settings-development.json' assert { type: 'json' };
 
-exports.config = {
+export const config = {
   name: `help`,
   aliases: [`cmds`, `commands`, `halp`],
   description: `Shows a list of all available bot commands`,
   usage: `${prefix}help {command_name}`,
   example: `${prefix}help handler`,
 };
-exports.execute = async (DiscordBot, receivedMessage, args) => {
+export const execute = async (DiscordBot, receivedMessage, args) => {
   console.log('settings: ', Settings.private.DEVELOPMENT_CHANNELS);
   console.log('received: ', receivedMessage.guild && receivedMessage.guild.id);
   console.log(`args`, args);
@@ -23,13 +23,20 @@ exports.execute = async (DiscordBot, receivedMessage, args) => {
     embed
       .setColor('#3498db')
       .setTitle('Help Command')
-      .setAuthor(
-        devSettings.public.productName,
-        DiscordBot.user.avatarURL,
-        devSettings.public.productAddress,
-      )
+      .setAuthor({
+        name: devSettings.public.productName,
+        iconURL: DiscordBot.user.avatarURL,
+        URL: devSettings.public.productAddress,
+      })
       .setDescription(
-        `Here is a list of all my commands \n\n use \`${prefix}help <command name>\` to get info about a specific command`,
+        `Here is a list of all my commands
+        
+        use \`${prefix}help <command_name>\` or  \`${prefix}help <alias_name>\` to get info about a specific command.
+
+        For example: 
+        \`${prefix}help ${commands.first().config.name}\` 
+        or 
+        \`${prefix}help ${commands.first().config.aliases[0]}\``,
       )
       .addFields({
         name: 'Commands (aliases)',
@@ -48,9 +55,12 @@ exports.execute = async (DiscordBot, receivedMessage, args) => {
         }\`\`\``,
       })
       .setTimestamp()
-      .setFooter('© SplitScreen.Me', DiscordBot.user.avatarURL);
+      .setFooter({
+        text: '© SplitScreen.Me',
+        iconURL: DiscordBot.user.avatarURL,
+      });
 
-    receivedMessage.channel.send(embed);
+    receivedMessage.channel.send({ embeds: [embed] });
     return;
   }
 
@@ -67,13 +77,16 @@ exports.execute = async (DiscordBot, receivedMessage, args) => {
   embed
     .setColor('#3498db')
     .setTitle('Help Command')
-    .setAuthor(
-      devSettings.public.productName,
-      DiscordBot.user.avatarURL,
-      devSettings.public.productAddress,
-    )
+    .setAuthor({
+      name: devSettings.public.productName,
+      iconURL: DiscordBot.user.avatarURL,
+      URL: devSettings.public.productAddress,
+    })
     .setTimestamp()
-    .setFooter('© SplitScreen.Me', DiscordBot.user.avatarURL);
+    .setFooter({
+      text: '© SplitScreen.Me',
+      iconURL: DiscordBot.user.avatarURL,
+    });
   if (cmd.config.name)
     embed.setDescription(
       `Help for the \`${prefix + cmd.config.name}\` command`,
@@ -90,12 +103,11 @@ exports.execute = async (DiscordBot, receivedMessage, args) => {
       name: 'Usage  [mandatory] <optional>',
       value: `\`\`\`${cmd.config.usage}\`\`\``,
     });
-  //if (cmd.config.aliases) embed.addFields({ name: 'Parameters' , value: `\`\`\`${cmd.config.parameters}\`\`\`` } )
   if (cmd.config.example)
     embed.addFields({
       name: 'Example',
       value: `\`\`\`${cmd.config.example}\`\`\``,
     });
 
-  receivedMessage.channel.send(embed);
+  receivedMessage.channel.send({ embeds: [embed] });
 };

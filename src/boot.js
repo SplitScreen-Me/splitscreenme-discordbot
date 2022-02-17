@@ -1,14 +1,19 @@
 import Discord from 'discord.js';
 import Axios from 'axios';
 import fs from 'fs';
-const { prefix } = require('../src/utils.js');
-const { MessageEmbed } = require('discord.js');
-import devSettings from '../settings-development';
+import { prefix } from './utils.js';
+import { MessageEmbed } from 'discord.js';
+import devSettings from '../settings-development.json' assert { type: 'json' };
 
 const publicSSMApiPath = 'https://hub.splitscreen.me/api/v1/';
 let botPrefix = prefix;
-const DiscordInit = (secretDiscordToken) => {
-  const DiscordBot = new Discord.Client();
+const DiscordInit = async (secretDiscordToken) => {
+  const DiscordBot = new Discord.Client({
+    intents: [
+      Discord.Intents.FLAGS.GUILDS,
+      Discord.Intents.FLAGS.GUILD_MESSAGES,
+    ],
+  });
 
   DiscordBot.commands = new Discord.Collection();
 
@@ -16,7 +21,7 @@ const DiscordInit = (secretDiscordToken) => {
     .readdirSync('./src/commands')
     .filter((file) => file.endsWith('.js'));
   for (const file of commandFiles) {
-    const command = require(`./commands/${file}`);
+    const command = await import(`./commands/${file}`);
     const commandName = file.split('.')[0];
     console.log(commandName);
 
@@ -68,7 +73,7 @@ const DiscordInit = (secretDiscordToken) => {
 
   DiscordBot.login(secretDiscordToken);
 
-  DiscordBot.on('message', async (receivedMessage) => {
+  DiscordBot.on('messageCreate', async (receivedMessage) => {
     let mentionRegex = receivedMessage.content.match(
       new RegExp(`^<@!?(${DiscordBot.user.id})>`, 'gi'),
     );
@@ -91,14 +96,16 @@ const DiscordInit = (secretDiscordToken) => {
         (cmd) => cmd.config.aliases && cmd.config.aliases.includes(commandName),
       );
 
+
     console.log(`args => ${args}`);
     console.log(`botPrefix.length => ${botPrefix.length}`);
     console.log(`commandName => ${commandName}`);
-    console.log(`command => ${command}`);
+    // console.log(`command => ${command}`);
 
     if (command) {
       console.log('command recognized');
       try {
+
         command.execute(DiscordBot, receivedMessage, args);
       } catch (error) {
         console.error(error);
@@ -119,7 +126,7 @@ const DiscordInit = (secretDiscordToken) => {
         .setDescription(
           `I connect with Splitscreen.me to get you data for handles, statistics, and answer questions you may have! If you would like you see a list of my commands, please do \`${prefix}help\``,
         );
-      receivedMessage.channel.send(embed);
+      receivedMessage.channel.send({ embeds: [embed] });
     } else if (
       !command &&
       fullCommand.length > 0 &&
