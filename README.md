@@ -11,7 +11,7 @@
 
 ## About the bot 🤖
 
-The Bot is created using basic EcmaScript (JavaScript) code, interpreted by [NodeJS](https://nodejs.org/) and the [ESM](https://github.com/standard-things/esm) module, along with the powerful [Discord.js](https://discord.js.org/) module.
+The Bot is created using basic EcmaScript (JavaScript) code, interpreted by [NodeJS](https://nodejs.org/), along with the powerful [Discord.js](https://discord.js.org/) module.
 
 Behind the scene, it requests to the [public SplitScreen.Me Hub API](https://github.com/SplitScreen-Me/splitscreenme-hub) using [Axios](https://github.com/axios/axios).
 
