@@ -1,0 +1,30 @@
+name: meta/repository Report
+description: for requesting changes and additions to the repo itself.
+title: "meta/ repository issue"
+labels: ["updates"]
+body:
+  - type: markdown
+    attributes:
+      value: '## Thanks for taking the time to contribute to the repository.'
+
+
+  - type: textarea
+    id: description
+    attributes:
+      label: additions
+      description: what type of additions do you think will make the repository more easily assessible.
+
+  - type: textarea
+    id: additions
+    attributes:
+      label: changes
+      description: is there something unclear with the files ?.
+
+  - type: textarea
+    id: extrainformation
+    attributes:
+      label: Additional information
+      description: is there anything else that you like to comment a little on
+
+      
+     
