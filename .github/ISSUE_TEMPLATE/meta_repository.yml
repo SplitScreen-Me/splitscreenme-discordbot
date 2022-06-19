@@ -1,11 +1,18 @@
-name: meta/repository Report
+name: "📇 <feature name>"
 description: for requesting changes and additions to the repo itself.
 title: "meta/ repository issue"
-labels: ["updates"]
+labels: ["📇 Meta/Repository"]
 body:
   - type: markdown
     attributes:
       value: '## Thanks for taking the time to contribute to the repository.'
+      value: '## Before you continue, please search our open/closed issues to see if a similar issue has been addressed.'
+  - type: checkboxes
+    attributes:
+      label: I have searched through the issues and didn't find my problem.
+      options:
+        - label: Confirm
+          required: true
 
 
   - type: textarea
@@ -24,7 +31,7 @@ body:
     id: extrainformation
     attributes:
       label: Additional information
-      description: is there anything else that you like to comment a little on
+      description: is there anything else that you'd like to add?
 
       
      
