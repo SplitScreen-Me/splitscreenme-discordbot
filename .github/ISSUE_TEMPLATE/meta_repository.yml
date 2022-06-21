@@ -9,7 +9,7 @@ body:
       
   - type: markdown
     attributes:
-      value: value: '## Before you continue, please search our open/closed issues to see if a similar issue has been addressed.'
+      value: '## Before you continue, please search our open/closed issues to see if a similar issue has been addressed.'
       
   - type: checkboxes
     attributes:
