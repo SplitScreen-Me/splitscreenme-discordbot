@@ -6,7 +6,11 @@ body:
   - type: markdown
     attributes:
       value: '## Thanks for taking the time to contribute to the repository.'
-      value: '## Before you continue, please search our open/closed issues to see if a similar issue has been addressed.'
+      
+  - type: markdown
+    attributes:
+      value: value: '## Before you continue, please search our open/closed issues to see if a similar issue has been addressed.'
+      
   - type: checkboxes
     attributes:
       label: I have searched through the issues and didn't find my problem.
@@ -21,17 +25,9 @@ body:
       label: additions
       description: what type of additions do you think will make the repository more easily assessible.
 
-  - type: textarea
-    id: additions
-    attributes:
-      label: changes
-      description: is there something unclear with the files ?.
 
   - type: textarea
     id: extrainformation
     attributes:
       label: Additional information
       description: is there anything else that you'd like to add?
-
-      
-     
