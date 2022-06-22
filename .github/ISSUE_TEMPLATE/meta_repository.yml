@@ -19,7 +19,6 @@ body:
         - label: Confirm
           required: true
 
-
   - type: textarea
     id: description
     attributes:
