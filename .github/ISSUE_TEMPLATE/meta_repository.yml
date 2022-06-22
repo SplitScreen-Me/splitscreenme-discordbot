@@ -11,7 +11,6 @@ body:
     attributes:
       value: '## Before you continue, please search our open/closed issues to see if a similar issue has been addressed.'
       
-      
   - type: checkboxes
     attributes:
       label: I have searched through the issues and didn't find my problem.
