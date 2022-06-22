@@ -26,7 +26,6 @@ body:
       label: additions
       description: what type of additions do you think will make the repository more easily assessible.
 
-
   - type: textarea
     id: extrainformation
     attributes:
