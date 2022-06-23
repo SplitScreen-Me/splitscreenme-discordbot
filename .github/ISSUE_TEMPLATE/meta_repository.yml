@@ -1,0 +1,31 @@
+name: "📇 Meta/Repository Feature"
+description: for requesting changes and additions to the repo itself.
+title: "📇 Meta/Repository Feature"
+labels: ["📇 Meta/Repository"]
+body:
+  - type: markdown
+    attributes:
+      value: '## Thanks for taking the time to contribute to the repository.'
+      
+  - type: markdown
+    attributes:
+      value: '## Before you continue, please search our open/closed issues to see if a similar issue has been addressed.'
+      
+  - type: checkboxes
+    attributes:
+      label: I have searched through the issues and didn't find my problem.
+      options:
+        - label: Confirm
+          required: true
+
+  - type: textarea
+    id: description
+    attributes:
+      label: additions
+      description: what type of additions do you think will make the repository more easily assessible.
+
+  - type: textarea
+    id: extrainformation
+    attributes:
+      label: Additional information
+      description: is there anything else that you'd like to add?
