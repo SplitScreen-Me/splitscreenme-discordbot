@@ -1,6 +1,6 @@
 name: "📇 Meta/Repository Feature"
 description: for requesting changes and additions to the repo itself.
-title: "meta/ repository issue"
+title: "📇 Meta/Repository Feature"
 labels: ["📇 Meta/Repository"]
 body:
   - type: markdown
