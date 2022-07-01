@@ -67,13 +67,10 @@ function createAndGetHelpEmbed(DiscordBot) {
     .setTimestamp()
     .setDescription(`Here are the possible options for the create command`)
     .setFooter({ text: '© SplitScreen.Me', iconURL: DiscordBot.user.avatarURL })
-    .addFields(
-      { name: `Tip`, value: `Copy the engine name to get the right casing.` },
-      {
-        name: `Available Game Engines`,
-        value: `\`\`\`${gameEngines.join('\n')}\`\`\``,
-      },
-    );
+    .addFields({
+      name: `Available Game Engines`,
+      value: `\`\`\`${gameEngines.join('\n')}\`\`\``,
+    });
 
   return embed;
 }
