@@ -75,6 +75,11 @@ export const execute = async (DiscordBot, receivedMessage, args) => {
               value: handler.downloadCount.toString(),
             },
             {
+              name: 'Players',
+              inline: true,
+              value: handler.maxPlayers > 2 ? `2 - ${handler.maxPlayers.toString()}` : handler.maxPlayers.toString(),
+            },
+            {
               name: 'Status',
               inline: true,
               value: handler.verified ? 'Verified' : 'Unverified',
