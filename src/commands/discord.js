@@ -14,5 +14,5 @@ export const execute = async (DiscordBot, receivedMessage, args) => {
   console.log('received: ', receivedMessage.guild && receivedMessage.guild.id);
   console.log(`args`, args);
 
-  receivedMessage.reply('\nhttps://discord.gg/a9ssM5pxTW');
+  receivedMessage.reply('\nhttps://discord.gg/qnbZtpECYg');
 };
