@@ -1,4 +1,8 @@
-import devSettings from '../settings-development.json' assert { type: 'json' };
+import { readFileSync } from 'node:fs';
+
+const devSettings = JSON.parse(
+  readFileSync(new URL('../settings-development.json', import.meta.url), 'utf8'),
+);
 
 const Settings = {
   private: { ...devSettings.private },
