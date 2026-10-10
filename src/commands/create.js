@@ -63,6 +63,7 @@ export const run = async ({ client, options: { engine, user } }) => {
 
   return {
     content: `${user ? `<@${user.id}> ` : ''}Here's your template file!`,
+    ...(user && { allowedMentions: { users: [user.id], repliedUser: true } }),
     files: [{ attachment: join(templatesDir, `${match}.js`), name: `${match}.js` }],
   };
 };

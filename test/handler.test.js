@@ -169,6 +169,29 @@ test('has no notes section when the author wrote none', async (t) => {
   assert.equal(componentsOfType(payload, ComponentType.TextDisplay).length, 2);
 });
 
+test('renders handlers with null fields from the Hub', async (t) => {
+  mockFetch(t, () =>
+    jsonResponse({
+      Handlers: [handlerRecord({ description: null, commentCount: null, gameUrl: null })],
+    }),
+  );
+
+  const payload = await run({ game: 'left 4 dead 2' });
+
+  assert.match(textOf(payload), /0 comments/);
+  assert.equal(buttonsOf(payload).length, 2);
+});
+
+test('links IGDB only with a web URL', async (t) => {
+  mockFetch(t, () =>
+    jsonResponse({ Handlers: [handlerRecord({ gameUrl: 'www.igdb.com/games/left-4-dead-2' })] }),
+  );
+
+  const buttons = buttonsOf(await run({ game: 'left 4 dead 2' }));
+
+  assert.deepEqual(buttons.map((button) => button.label), ['Download v17', 'View on Hub']);
+});
+
 test('offers no menu when the Hub found a single handler', async (t) => {
   mockFetch(t, () => jsonResponse({ Handlers: [handlerRecord()] }));
 

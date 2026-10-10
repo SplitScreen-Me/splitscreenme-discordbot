@@ -21,6 +21,8 @@ test('pings the requested user along with the link', async () => {
     payload.content,
     `<@${fakeUser.id}>\nHere's a link to the latest Nucleus Co-op version:\n${LINK}`,
   );
+  // The bot pings nobody by default (see boot.js): this user must be allowed explicitly.
+  assert.deepEqual(payload.allowedMentions, { users: [fakeUser.id], repliedUser: true });
 });
 
 test('reads the pinged user from a mention', () => {

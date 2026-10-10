@@ -13,6 +13,9 @@ const DiscordInit = async (secretDiscordToken) => {
     // No privileged intent: without Message Content, GuildMessages only gives the content
     // of messages mentioning the bot, which is all the mention commands need.
     intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildMessages],
+    // Replies show text written on the Hub (author notes, names): never let it ping anyone,
+    // except the author of a mention command. Commands allow their target user explicitly.
+    allowedMentions: { parse: [], repliedUser: true },
   });
 
   DiscordBot.once(Events.ClientReady, async () => {

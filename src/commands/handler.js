@@ -151,8 +151,8 @@ const stats = (handler) =>
   `🔥 ${formatNumber(handler.stars)} hotness · ⬇️ ${formatNumber(handler.downloadCount)} downloads · 💬 ${formatNumber(handler.commentCount)} comments`;
 
 // Beginning of the author notes (often a guide link): whole lines when possible, else whole words.
-const notes = (description = '') => {
-  const text = description.trim();
+const notes = (description) => {
+  const text = (description ?? '').trim();
   if (text.length <= NOTES_LENGTH) return text;
 
   let kept = '';
@@ -215,7 +215,9 @@ const handlerMessage = (handler, menu) => {
         `${HUB_URL}cdn/storage/packages/${handler.currentPackage}/original/handler-${handler._id}-v${handler.currentVersion}.nc?download=true`,
       ),
       linkButton('View on Hub', '🌐', handlerPageUrl(handler)),
-      ...(handler.gameUrl ? [linkButton('IGDB', '🎮', handler.gameUrl)] : []),
+      ...(/^https?:\/\//.test(handler.gameUrl ?? '')
+        ? [linkButton('IGDB', '🎮', handler.gameUrl)]
+        : []),
     ),
   );
 

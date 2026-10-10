@@ -21,6 +21,8 @@ test('pings the requested user along with the template', async () => {
 
   assert.equal(payload.content, `<@${fakeUser.id}> Here's your template file!`);
   assert.equal(payload.files[0].name, 'unity.js');
+  // The bot pings nobody by default (see boot.js): this user must be allowed explicitly.
+  assert.deepEqual(payload.allowedMentions, { users: [fakeUser.id], repliedUser: true });
 });
 
 test('lists the available engines when the engine is unknown', async () => {

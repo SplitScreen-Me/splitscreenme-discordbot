@@ -1,4 +1,4 @@
-export const formatNumber = (number = 0) => number.toLocaleString('en-US');
+export const formatNumber = (number) => (number ?? 0).toLocaleString('en-US');
 
 // Discord renders it in each reader's language and time zone, e.g. "6 days ago".
 export const relativeTime = (date) =>

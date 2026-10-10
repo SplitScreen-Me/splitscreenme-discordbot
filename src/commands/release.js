@@ -24,4 +24,5 @@ export const run = async ({ options: { user } }) => ({
   content: user
     ? `<@${user.id}>\nHere's a link to the latest Nucleus Co-op version:\n${latestNucleusReleaseLink}`
     : latestNucleusReleaseLink,
+  ...(user && { allowedMentions: { users: [user.id], repliedUser: true } }),
 });
