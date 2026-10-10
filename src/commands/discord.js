@@ -1,18 +1,17 @@
-import Settings from '../../src/settings.js';
-import { prefix } from '../../src/utils.js';
+import { SlashCommandBuilder } from 'discord.js';
 
 export const config = {
   name: `discord`,
   aliases: [`d`, `disc`],
   description: `Return invite link to the Nucleus Coop Discord`,
-  usage: `${prefix}discord`,
-  example: `${prefix}discord`,
+  usage: ``,
+  example: ``,
 };
 
-export const execute = async (DiscordBot, receivedMessage, args) => {
-  console.log('settings: ', Settings.private.DEVELOPMENT_CHANNELS);
-  console.log('received: ', receivedMessage.guild && receivedMessage.guild.id);
-  console.log(`args`, args);
+export const data = new SlashCommandBuilder()
+  .setName(config.name)
+  .setDescription(config.description);
 
-  receivedMessage.reply('\nhttps://discord.gg/qnbZtpECYg');
-};
+export const fromMessage = () => ({});
+
+export const run = async () => ({ content: 'https://discord.gg/qnbZtpECYg' });

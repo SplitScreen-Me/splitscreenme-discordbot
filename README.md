@@ -21,30 +21,17 @@ Feel free to **contribute & help** us build the most amazing **bot for splitscre
 
 > The bot is public, anyone can invite it to its own Discord server.
 
-### Parameter types
-| Available parameter types | Explanation        |
-| ------------------------- | ------------------ |
-| < >                       | Optional parameter |
-| [ ]                       | Required parameter |
+Commands are **slash commands**: type `/` in Discord to see them. They can also be called by mentioning the bot, e.g. `@SplitScreen Bot handler Borderlands` (the bot does not need the privileged *Message Content* intent: Discord gives bots the content of messages that mention them).
 
 ### Commands
-| Command name  | Aliases                            | Usage                                         | Example Usage                                                            |
-| ------------- | ---------------------------------- | --------------------------------------------- | ------------------------------------------------------------------------ |
-| help          | `cmds`, `commands`, `halp`         | ${prefix}help {command_name}                  | Shows a list of all available bot commands                               |
-| handler       | `h`, `script`                      | ${prefix}handler Borderlands                  | Return handler for the specified game.                                   |
-| create        | `c`, `make`                        | ${prefix}create [engineName] <@user>          | Creates the handler for a chosen GameEngine. For a list of supported Engines, use ${prefix}create options |
-| discord       | `d`, `disc`                        | ${prefix}discord                              | Return invite link to the Nucleus Coop Discord                           |
-| hubstats      |                                    | ${prefix}hubstats                             | Return stats from the hub                                                |
-
-### Examples
-| Commmand            | Screenshot                                                                                                                |
-| --------------------| ------------------------------------------------------------------------------------------------------------------------- |
-| -help               | ![-help](https://user-images.githubusercontent.com/43886029/134237392-205043e3-0619-4852-99c9-0cfbcba177b5.png)           |
-| -h left 4 dead      | ![-h left 4 dead](https://user-images.githubusercontent.com/43886029/134236654-dd8e888c-9b16-481e-ba41-3cc62e18f949.png)  |
-| -c diesel           | ![-c diesel](https://user-images.githubusercontent.com/43886029/134236614-02f5386e-831a-4d60-84bd-35680d7a675c.png)       |
-| -d                  | ![-d](https://user-images.githubusercontent.com/43886029/134236851-d11db3dc-8853-4f32-9c3a-e0d10d084e6c.png)              |
-| -hubstats           | ![-hubstats](https://user-images.githubusercontent.com/43886029/134237049-0c361f13-f69d-40c9-8f5e-f1cb9c0ebb8f.png)       |
-
+| Slash command                 | Mention usage (`[mandatory] <optional>`) | Aliases                    | Description                                         |
+| ----------------------------- | ---------------------------------------- | -------------------------- | --------------------------------------------------- |
+| `/help [command]`             | `@bot help <command name>`               | `cmds`, `commands`, `halp` | Shows a list of all available bot commands          |
+| `/handler game:`              | `@bot handler [game name]`               | `h`, `script`              | Return handler for the specified game (autocompleted from the Hub) |
+| `/create engine: [user:]`     | `@bot create [engine name] <@user>`      | `c`, `make`                | Sends the handler template of a game engine         |
+| `/discord`                    | `@bot discord`                           | `d`, `disc`                | Return invite link to the Nucleus Coop Discord      |
+| `/hubstats`                   | `@bot hubstats`                          |                            | Return stats from the hub                           |
+| `/release [user:]`            | `@bot release <@user>`                   | `r`, `nucleus`             | Return link to the latest Nucleus Co-op release     |
 
 ## Building 🚧
 
@@ -56,12 +43,16 @@ Watch the first 2 minutes of this video, to see how: https://youtu.be/JMmUW4d3No
 From the [Discord bot](https://discord.com/developers/applications) you just made, copy the token for your bot into the value field of `DISCORD_BOT_SECRET_TOKEN` in [settings-development.json](settings-development.json). To select which channels you want the bot to access, copy the channel id's into the `DEVELOPMENT_CHANNELS` array, in the same file.
 
 ### Running locally
-to run the bot, run this in the terminal
+Requires [NodeJS](https://nodejs.org/) 22 or later. Slash commands are registered globally when the bot starts.
 
 **Development:**
 ```console
 yarn install
 yarn run start:dev
+```
+**Tests:**
+```console
+yarn test
 ```
 **Production:**
 

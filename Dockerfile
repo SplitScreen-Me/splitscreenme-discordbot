@@ -1,12 +1,12 @@
-FROM node:16
+FROM node:22-slim
 
-ENV NODE_ENV production
+ENV NODE_ENV=production
 
 WORKDIR /usr/src/app
-COPY package*.json ./
+COPY package.json yarn.lock ./
 
 
-RUN npm install --production
+RUN yarn install --frozen-lockfile --production
 COPY . .
 
 CMD [ "npm", "run", "start:prod" ]

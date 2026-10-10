@@ -5,19 +5,17 @@
   "description": "",
   "main": "bot.js",
   "scripts": {
-    "start:dev": "nodemon --exec \"node --experimental-json-modules ./bot.js\"",
-    "start:prod": "node --experimental-json-modules ./bot.js --production",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start:dev": "node --watch ./bot.js",
+    "start:prod": "node ./bot.js",
+    "test": "node --test \"test/**/*.test.js\""
   },
   "keywords": [],
   "author": "Rémi MACH <r-mach>",
   "license": "ISC",
   "dependencies": {
-    "axios": "^0.26.0",
-    "discord.js": "^13.6.0"
+    "discord.js": "^14.27.0"
   },
-  "devDependencies": {
-    "@types/node": "12",
-    "nodemon": "^2.0.15"
+  "engines": {
+    "node": ">=22"
   }
 }

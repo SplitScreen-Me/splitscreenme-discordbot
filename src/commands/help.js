@@ -1,108 +1,77 @@
-import Settings from '../settings.js';
-import { prefix } from '../../src/utils.js';
-import { MessageEmbed } from 'discord.js';
-import devSettings from '../../settings-development.json' assert { type: 'json' };
+import { SlashCommandBuilder } from 'discord.js';
+import { baseEmbed } from '../embeds.js';
+import { findCommand } from '../registry.js';
 
 export const config = {
   name: `help`,
   aliases: [`cmds`, `commands`, `halp`],
   description: `Shows a list of all available bot commands`,
-  usage: `${prefix}help {command_name}`,
-  example: `${prefix}help handler`,
+  usage: `<command name>`,
+  example: `handler`,
 };
-export const execute = async (DiscordBot, receivedMessage, args) => {
-  console.log('settings: ', Settings.private.DEVELOPMENT_CHANNELS);
-  console.log('received: ', receivedMessage.guild && receivedMessage.guild.id);
-  console.log(`args`, args);
 
-  const embed = new MessageEmbed();
-  const { commands } = receivedMessage.client;
+export const data = new SlashCommandBuilder()
+  .setName(config.name)
+  .setDescription(config.description)
+  .addStringOption((option) =>
+    option
+      .setName('command')
+      .setDescription('Command to get info about')
+      .setAutocomplete(true),
+  );
 
-  console.log('args', args);
-  if (!args.length) {
-    embed
-      .setColor('#3498db')
-      .setTitle('Help Command')
-      .setAuthor({
-        name: devSettings.public.productName,
-        iconURL: DiscordBot.user.avatarURL,
-        URL: devSettings.public.productAddress,
-      })
-      .setDescription(
-        `Here is a list of all my commands\n\nuse \`${prefix}help <command_name>\` or  \`${prefix}help <alias_name>\` to get info about a specific command.\n\nFor example:\n\`${prefix}help ${
-          commands.first().config.name
-        }\`\nor \n\`${prefix}help ${commands.first().config.aliases[0]}\``,
-      )
-      .addFields({
-        name: 'Commands (aliases)',
-        value: `\`\`\`${
-          prefix +
-          commands
-            .map(
-              (c) =>
-                `${c.config.name} ${
-                  c.config.aliases.length
-                    ? '(' + c.config.aliases.join(`, `) + `)`
-                    : ''
-                }`,
-            )
-            .join(`\n${prefix}`)
-        }\`\`\``,
-      })
-      .setTimestamp()
-      .setFooter({
-        text: '© SplitScreen.Me',
-        iconURL: DiscordBot.user.avatarURL,
-      });
+export const fromMessage = ({ args }) => ({ command: args[0] });
 
-    receivedMessage.channel.send({ embeds: [embed] });
-    return;
+export const autocomplete = async ({ value, commands }) =>
+  [...commands.keys()]
+    .filter((name) => name.startsWith(value.toLowerCase()))
+    .map((name) => ({ name, value: name }));
+
+export const run = async ({ client, commands, options: { command } }) => {
+  const mention = `@${client.user.username}`;
+
+  if (!command) {
+    return {
+      embeds: [
+        baseEmbed(client)
+          .setTitle('Help Command')
+          .setDescription(
+            `Type \`/\` to see all my commands, or mention me: \`${mention} <command>\`.\n\nUse \`/help command:<name>\` to get info about a specific command.`,
+          )
+          .addFields({
+            name: 'Commands',
+            value: [...commands.values()]
+              .map((cmd) => `\`/${cmd.config.name}\` — ${cmd.config.description}`)
+              .join('\n'),
+          }),
+      ],
+    };
   }
 
-  const name = args[0];
-  const cmd =
-    commands.get(name) ||
-    commands.find((c) => c.config.aliases && c.config.aliases.includes(name));
+  const cmd = findCommand(commands, command.toLowerCase());
+  if (!cmd) return { content: `\`${command}\` is NOT a valid command` };
 
-  if (!cmd) {
-    receivedMessage.reply(`${name} is NOT a valid command`);
-    return;
-  }
+  const { name, aliases, description, usage, example } = cmd.config;
+  const slashOptions = (cmd.data.toJSON().options ?? []).map(
+    (option) =>
+      `• \`${option.name}\`${option.required ? ' (required)' : ''}: ${option.description}`,
+  );
 
-  embed
-    .setColor('#3498db')
+  const embed = baseEmbed(client)
     .setTitle('Help Command')
-    .setAuthor({
-      name: devSettings.public.productName,
-      iconURL: DiscordBot.user.avatarURL,
-      URL: devSettings.public.productAddress,
-    })
-    .setTimestamp()
-    .setFooter({
-      text: '© SplitScreen.Me',
-      iconURL: DiscordBot.user.avatarURL,
-    });
-  if (cmd.config.name)
-    embed.setDescription(
-      `Help for the \`${prefix + cmd.config.name}\` command`,
+    .setDescription(`Help for the \`/${name}\` command`)
+    .addFields(
+      { name: 'Description', value: description },
+      { name: 'Slash command', value: [`\`/${name}\``, ...slashOptions].join('\n') },
+      {
+        name: 'Mention  [mandatory] <optional>',
+        value: `\`\`\`${mention} ${name}${usage ? ` ${usage}` : ''}\`\`\`${
+          aliases.length ? `Aliases: ${aliases.map((alias) => `\`${alias}\``).join(', ')}` : ''
+        }`,
+      },
     );
-  if (cmd.config.description)
-    embed.addFields({ name: 'Description', value: cmd.config.description });
-  if (cmd.config.aliases.length)
-    embed.addFields({
-      name: 'Aliases',
-      value: `\`\`\`${cmd.config.aliases.join(` , `)}\`\`\``,
-    });
-  if (cmd.config.usage)
-    embed.addFields({
-      name: 'Usage  [mandatory] <optional>',
-      value: `\`\`\`${cmd.config.usage}\`\`\``,
-    });
-  if (cmd.config.example)
-    embed.addFields({
-      name: 'Example',
-      value: `\`\`\`${cmd.config.example}\`\`\``,
-    });
-
-  receivedMessage.channel.send({ embeds: [embed] });
+  if (example) {
+    embed.addFields({ name: 'Example', value: `\`\`\`${mention} ${name} ${example}\`\`\`` });
+  }
+  return { embeds: [embed] };
 };

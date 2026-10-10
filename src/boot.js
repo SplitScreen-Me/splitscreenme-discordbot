@@ -1,145 +1,188 @@
-import Discord from 'discord.js';
-import Axios from 'axios';
-import fs from 'fs';
-import { prefix } from './utils.js';
-import { MessageEmbed } from 'discord.js';
-import devSettings from '../settings-development.json' assert { type: 'json' };
+import { Client, Events, GatewayIntentBits, MessageFlags } from 'discord.js';
+import { baseEmbed } from './embeds.js';
+import { getAllHandlers } from './hub.js';
+import { parseMention } from './mention.js';
+import { findCommand, loadCommands } from './registry.js';
 
-const publicSSMApiPath = 'https://hub.splitscreen.me/api/v1/';
-let botPrefix = prefix;
+const ACTIVITY_REFRESH_INTERVAL = 60_000;
+const FAILURE_MESSAGE = 'Sorry, something went wrong. Please try again later.';
+
 const DiscordInit = async (secretDiscordToken) => {
-  const DiscordBot = new Discord.Client({
-    intents: [
-      Discord.Intents.FLAGS.GUILDS,
-      Discord.Intents.FLAGS.GUILD_MESSAGES,
-    ],
+  const commands = await loadCommands();
+  const DiscordBot = new Client({
+    // No privileged intent: without Message Content, GuildMessages only gives the content
+    // of messages mentioning the bot, which is all the mention commands need.
+    intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildMessages],
+    // Replies show text written on the Hub (author notes, names): never let it ping anyone,
+    // except the author of a mention command. Commands allow their target user explicitly.
+    allowedMentions: { parse: [], repliedUser: true },
   });
 
-  DiscordBot.commands = new Discord.Collection();
-
-  const commandFiles = fs
-    .readdirSync('./src/commands')
-    .filter((file) => file.endsWith('.js'));
-  for (const file of commandFiles) {
-    const command = await import(`./commands/${file}`);
-    const commandName = file.split('.')[0];
-    console.log(commandName);
-
-    DiscordBot.commands.set(commandName, command);
-  }
-
-  DiscordBot.on('ready', async () => {
-    console.log('botPrefix = ' + botPrefix);
+  DiscordBot.once(Events.ClientReady, async () => {
     console.log('[Debug] Connected as ' + DiscordBot.user.tag);
     console.log('[Debug] Servers:');
-
     DiscordBot.guilds.cache.forEach((guild) => {
       console.log('[Debug]  - ' + guild.name);
     });
-    console.log(
-      `[Debug] Bot has started, with ${DiscordBot.users.size} user(s), in ${DiscordBot.channels.size} channel(s) of ${DiscordBot.guilds.size} server(s).`,
-    );
+
     try {
-      const allHandlers = await Axios.get(publicSSMApiPath + 'allhandlers');
-      const totalHandlers = allHandlers.data.Handlers.length;
-
-      await DiscordBot.user.setActivity(
-        'Hosting ' + totalHandlers + ' handlers!',
+      // Overwrites the whole global set, so registering on every start is idempotent.
+      await DiscordBot.application.commands.set(
+        [...commands.values()].map((command) => command.data.toJSON()),
       );
-
-      setInterval(async () => {
-        const allHandlers = await Axios.get(publicSSMApiPath + 'allhandlers');
-        const totalHandlers = allHandlers.data.Handlers.length;
-        await DiscordBot.user.setActivity(
-          'Hosting ' + totalHandlers + ' handlers!',
-        );
-      }, 60000);
-    } catch (e) {
-      console.log('error', e);
+      console.log(`[Debug] Slash commands registered: ${[...commands.keys()].join(', ')}`);
+    } catch (error) {
+      console.error('[Error] Could not register slash commands', error);
     }
+
+    const updateActivity = async () => {
+      try {
+        const handlers = await getAllHandlers();
+        DiscordBot.user.setActivity(`Hosting ${handlers.length} handlers!`);
+      } catch (error) {
+        console.error('[Error] Could not refresh the handlers count', error);
+      }
+    };
+    await updateActivity();
+    setInterval(updateActivity, ACTIVITY_REFRESH_INTERVAL);
   });
 
-  DiscordBot.on('guildCreate', (guild) => {
-    // This event triggers when the bot joins a guild.
+  DiscordBot.on(Events.GuildCreate, (guild) => {
     console.log(
       `New guild joined: ${guild.name} (id: ${guild.id}). This guild has ${guild.memberCount} members!`,
     );
   });
 
-  DiscordBot.on('guildDelete', (guild) => {
-    // this event triggers when the bot is removed from a guild.
+  DiscordBot.on(Events.GuildDelete, (guild) => {
     console.log(`I have been removed from: ${guild.name} (id: ${guild.id})`);
   });
 
-  DiscordBot.login(secretDiscordToken);
-
-  DiscordBot.on('messageCreate', async (receivedMessage) => {
-    let mentionRegex = receivedMessage.content.match(
-      new RegExp(`^<@!?(${DiscordBot.user.id})>`, 'gi'),
-    );
-    if (mentionRegex) {
-      botPrefix = `${mentionRegex}`;
-    } else {
-      botPrefix = prefix;
+  DiscordBot.on(Events.InteractionCreate, async (interaction) => {
+    if (interaction.isStringSelectMenu()) {
+      await onSelect(interaction);
+      return;
     }
-    console.log('botPrefix = ' + botPrefix);
+    if (!interaction.isAutocomplete() && !interaction.isChatInputCommand()) return;
+    const command = commands.get(interaction.commandName);
+    if (!command) return;
 
-    if (receivedMessage.author.bot) return; //Will ignore bots and it-self
-    if (!receivedMessage.content.startsWith(botPrefix)) return; //Ignore messages from users which don't start with {botPrefix}
-    const fullCommand = receivedMessage.content.substr(botPrefix.length); // Remove the leading {botPrefix}
-    const splitCommand = fullCommand.trim().split(' '); // Split the message up in to pieces for each space
-    const args = splitCommand.slice(1); //arguments
-    const commandName = splitCommand[0].toLowerCase(); // The first word directly after the {botPrefix} is the command or alias
-    const command = //get the command based on a command or alias
-      DiscordBot.commands.get(commandName) ||
-      DiscordBot.commands.find(
-        (cmd) => cmd.config.aliases && cmd.config.aliases.includes(commandName),
-      );
-
-
-    console.log(`args => ${args}`);
-    console.log(`botPrefix.length => ${botPrefix.length}`);
-    console.log(`commandName => ${commandName}`);
-    // console.log(`command => ${command}`);
-
-    if (command) {
-      console.log('command recognized');
+    if (interaction.isAutocomplete()) {
       try {
-
-        command.execute(DiscordBot, receivedMessage, args);
+        const focused = interaction.options.getFocused(true);
+        await interaction.respond(await command.autocomplete({ ...focused, commands }));
       } catch (error) {
-        console.error(error);
+        console.error(`[Error] /${command.config.name} autocomplete`, error);
+        await interaction.respond([]).catch(() => {});
       }
-    } else if (botPrefix !== prefix && !command && !fullCommand.length) {
-      const embed = new MessageEmbed();
-      embed
-        .setColor('#3498db')
-        .setTitle(`Hello! I am the bot for Splitscreen.me!`)
-        .setURL('https://splitscreen.me/')
-        .setAuthor(
-          devSettings.public.productName,
-          DiscordBot.user.avatarURL,
-          devSettings.public.productAddress,
-        )
-        .setTimestamp()
-        .setFooter('© SplitScreen.Me', DiscordBot.user.avatarURL)
-        .setDescription(
-          `I connect with Splitscreen.me to get you data for handles, statistics, and answer questions you may have! If you would like you see a list of my commands, please do \`${prefix}help\``,
-        );
-      receivedMessage.channel.send({ embeds: [embed] });
-    } else if (
-      !command &&
-      fullCommand.length > 0 &&
-      fullCommand.charAt(0) !== ' '
-    ) {
-      console.log('Command NOT recognized');
-      receivedMessage.channel.send(
-        `Command NOT recognized, use \`${prefix}help\` to see all available commands`,
-      );
-    } else {
-      console.log('Command either has length 0, or is an empty string'); //Ignore CMDs which are not imported
+      return;
+    }
+
+    const options = Object.fromEntries(
+      interaction.options.data.map((option) => [option.name, option.user ?? option.value]),
+    );
+    console.log(
+      `[Slash] ${interaction.user.tag}: /${command.config.name}`,
+      interaction.options.data.map((option) => `${option.name}:${option.value}`).join(' '),
+    );
+
+    try {
+      // Hub requests can exceed the 3s Discord gives to answer: acknowledge first.
+      await interaction.deferReply();
+      await interaction.editReply(await command.run({ client: DiscordBot, commands, options }));
+    } catch (error) {
+      console.error(`[Error] /${command.config.name}`, error);
+      const failure = interaction.deferred
+        ? interaction.editReply({ content: FAILURE_MESSAGE })
+        : interaction.reply({ content: FAILURE_MESSAGE, flags: MessageFlags.Ephemeral });
+      await failure.catch(() => {});
     }
   });
+
+  // Menus have a "<command>:<action>" custom id: the command that sent the menu handles the pick.
+  const onSelect = async (interaction) => {
+    const command = commands.get(interaction.customId.split(':')[0]);
+    if (!command?.select) return;
+    console.log(
+      `[Select] ${interaction.user.tag}: ${interaction.customId} ${interaction.values.join(' ')}`,
+    );
+
+    try {
+      const payload = await command.select({
+        client: DiscordBot,
+        values: interaction.values,
+        menu: interaction.component.toJSON(),
+      });
+      // Only whoever asked can change the shared message, others get the result privately.
+      const asker =
+        interaction.message.interactionMetadata?.user.id ??
+        interaction.message.mentions.repliedUser?.id;
+      if (payload.components && asker === interaction.user.id) {
+        await interaction.update(payload);
+      } else {
+        await interaction.reply({
+          ...payload,
+          flags: (payload.flags ?? 0) | MessageFlags.Ephemeral,
+        });
+      }
+    } catch (error) {
+      console.error(`[Error] ${interaction.customId}`, error);
+      await interaction
+        .reply({ content: FAILURE_MESSAGE, flags: MessageFlags.Ephemeral })
+        .catch(() => {});
+    }
+  };
+
+  DiscordBot.on(Events.MessageCreate, async (receivedMessage) => {
+    if (receivedMessage.author.bot) return; //Will ignore bots and it-self
+    const mention = parseMention(receivedMessage.content, DiscordBot.user.id);
+    if (!mention) return;
+
+    const { commandName, args } = mention;
+    try {
+      if (!commandName) {
+        await receivedMessage.reply({
+          embeds: [
+            baseEmbed(DiscordBot)
+              .setTitle(`Hello! I am the bot for Splitscreen.me!`)
+              .setURL('https://splitscreen.me/')
+              .setDescription(
+                `I connect with Splitscreen.me to get you data for handlers, statistics, and answer questions you may have! If you would like to see a list of my commands, please use \`/help\``,
+              ),
+          ],
+        });
+        return;
+      }
+
+      const command = findCommand(commands, commandName);
+      if (!command) {
+        await receivedMessage.reply(
+          'Command NOT recognized, use `/help` to see all available commands',
+        );
+        return;
+      }
+
+      console.log(
+        `[Mention] ${receivedMessage.author.tag}: ${command.config.name} ${args.join(' ')}`,
+      );
+      const mentionedUser = receivedMessage.mentions.users.find(
+        (user) => user.id !== DiscordBot.user.id,
+      );
+      await receivedMessage.reply(
+        await command.run({
+          client: DiscordBot,
+          commands,
+          options: command.fromMessage({ args, mentionedUser }),
+        }),
+      );
+    } catch (error) {
+      console.error(`[Error] mention command ${commandName}`, error);
+      await receivedMessage.reply(FAILURE_MESSAGE).catch(() => {});
+    }
+  });
+
+  DiscordBot.on(Events.Error, (error) => console.error('[Error] Discord client', error));
+
+  await DiscordBot.login(secretDiscordToken);
 };
 
 export default DiscordInit;
